@@ -1,0 +1,23 @@
+{
+  "name": "guguorder",
+  "version": "1.0.0",
+  "description": "guguorder",
+  "private": true,
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Kevin Hu",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.3.0",
+    "body-parser": "*",
+    "cookie-parser": "*",
+    "express": "*",
+    "express-session": "*",
+    "express-validator": "*",
+    "morgan": "*",
+    "multer": "*",
+    "path": "*"
+  }
+}
