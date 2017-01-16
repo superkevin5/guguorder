@@ -3,6 +3,7 @@ var router = express.Router();
 
 
 router.get('/register', function(req, res, next) {
+	console.log('111111');
 	res.json({"foo": "bar"});
 });
 
@@ -15,8 +16,12 @@ router.post('/register', function(req, res, next) {
 });
 
 router.post('/login', function(req, res, next) {
-	// var email = req.body.email;
-	// var password = req.body.password;
+	var email = req.body.email;
+	var token = req.body.token;
+
+
+
+
     //
 	// // Validation
 	// req.checkBody('email', 'Email is required').notEmpty();

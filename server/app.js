@@ -1,11 +1,12 @@
 var express = require('express');
 var path = require('path');
 var logger = require('morgan');
+var fs = require('fs');
+var util = require('util');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var expressValidator = require('express-validator');
-
 
 
 // Route Files
@@ -15,12 +16,17 @@ var users = require('./routes/users');
 //init app
 var app = express();
 
-// // View Engine
-// app.set('views', path.join(__dirname, 'views'));
-// app.set('view engine', 'ejs');
-
 // Logger
-app.use(logger('dev'));
+// create a write stream (in append mode)
+var accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), {flags: 'a'});
+app.use(logger('combined', {stream: accessLogStream}));
+var logStdout = process.stdout;
+console.log = function () {
+    accessLogStream.write(util.format.apply(null, arguments) + '\n');
+    logStdout.write(util.format.apply(null, arguments) + '\n');
+};
+console.error = console.log;
+
 
 // Body Parser
 app.use(bodyParser.json());
@@ -75,9 +81,6 @@ app.use(function(err, req, res, next) {
     });
 });
 
-module.exports = app;
-
-
 
 
 //// Get User Info
@@ -101,3 +104,6 @@ app.set('port', (process.env.PORT || 3002));
 app.listen(app.get('port'), function () {
     console.log('Server starts on port: ' + app.get('port'));
 });
+
+
+module.exports = app;
