@@ -1,12 +1,13 @@
 var express = require('express');
 var path = require('path');
-var logger = require('morgan');
+var morgan = require('morgan');
 var fs = require('fs');
 var util = require('util');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var expressValidator = require('express-validator');
+var log4js = require("log4js");
 
 
 // Route Files
@@ -17,9 +18,13 @@ var users = require('./routes/users');
 var app = express();
 
 // Logger
-// create a write stream (in append mode)
+var theAppLog = log4js.getLogger();
+log4js.loadAppender('file');
+log4js.addAppender(log4js.appenders.file(path.join(__dirname, 'access.log')), 'gugulogger');
+
+
 var accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), {flags: 'a'});
-app.use(logger('combined', {stream: accessLogStream}));
+app.use(morgan('combined', {stream: accessLogStream}));
 var logStdout = process.stdout;
 console.log = function () {
     accessLogStream.write(util.format.apply(null, arguments) + '\n');

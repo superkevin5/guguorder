@@ -1,9 +1,13 @@
 var express = require('express');
 var router = express.Router();
-
+var Error = require('../model/error.js');
+var GUGUContants = require('../utility/constant.js');
+var log4js = require("log4js");
+var logger = log4js.getLogger('gugulogger');
 
 router.get('/register', function(req, res, next) {
-	console.log('111111');
+
+	console.log('sss');
 	res.json({"foo": "bar"});
 });
 
@@ -18,10 +22,16 @@ router.post('/register', function(req, res, next) {
 router.post('/login', function(req, res, next) {
 	var email = req.body.email;
 	var token = req.body.token;
+	req.checkBody('email', 'Email is required').notEmpty();
+	req.checkBody('token', 'Token is required').notEmpty();
+	var errors = req.validationErrors();
 
-
-
-
+	if(errors && errors.length >0 ){
+		res.status(GUGUContants.NotAcceptable);
+		res.json(new Error(GUGUContants.NotAcceptable, {
+			message: errors
+		}));
+	}
     //
 	// // Validation
 	// req.checkBody('email', 'Email is required').notEmpty();
