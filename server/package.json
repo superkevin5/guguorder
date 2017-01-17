@@ -9,6 +9,7 @@
   "author": "Kevin Hu",
   "license": "ISC",
   "dependencies": {
+    "async": "^2.1.4",
     "bcryptjs": "^2.3.0",
     "body-parser": "*",
     "cookie-parser": "*",
@@ -19,6 +20,7 @@
     "morgan": "*",
     "multer": "*",
     "mysql": "~2.12.0",
-    "path": "*"
+    "path": "*",
+    "sync": "^0.2.5"
   }
 }

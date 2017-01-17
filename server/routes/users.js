@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var Error = require('../model/error.js');
+var GUGUError = require('../model/error.js');
 var GUGUContants = require('../utility/constant.js');
 var log4js = require("log4js");
 var logger = log4js.getLogger('gugulogger');
@@ -28,7 +28,7 @@ router.post('/login', function(req, res, next) {
 
 	if(errors && errors.length >0 ){
 		res.status(GUGUContants.NotAcceptable);
-		res.json(new Error(GUGUContants.NotAcceptable, {
+		res.json(new GUGUError(GUGUContants.NotAcceptable, {
 			message: errors
 		}));
 	}

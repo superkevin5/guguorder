@@ -1,14 +1,15 @@
 var express = require('express');
 var path = require('path');
 var morgan = require('morgan');
+var log4js = require("log4js");
 var fs = require('fs');
 var util = require('util');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var expressValidator = require('express-validator');
-var log4js = require("log4js");
-
+var mysqlDB = require('./utility/db');
+var gugulogger = log4js.getLogger('gugulogger');
 
 // Route Files
 var routes = require('./routes/index');
@@ -18,19 +19,11 @@ var users = require('./routes/users');
 var app = express();
 
 // Logger
-var theAppLog = log4js.getLogger();
 log4js.loadAppender('file');
 log4js.addAppender(log4js.appenders.file(path.join(__dirname, 'access.log')), 'gugulogger');
-
-
 var accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), {flags: 'a'});
 app.use(morgan('combined', {stream: accessLogStream}));
 var logStdout = process.stdout;
-console.log = function () {
-    accessLogStream.write(util.format.apply(null, arguments) + '\n');
-    logStdout.write(util.format.apply(null, arguments) + '\n');
-};
-console.error = console.log;
 
 
 // Body Parser
@@ -106,8 +99,19 @@ app.use('/users', users);
 
 app.set('port', (process.env.PORT || 3002));
 
-app.listen(app.get('port'), function () {
-    console.log('Server starts on port: ' + app.get('port'));
+// Connect to MySQL on start
+mysqlDB.connect(mysqlDB.MODE_PRODUCTION, function(err) {
+    if (err) {
+        console.log('Unable to connect to MySQL.');
+        gugulogger.error('Unable to connect to MySQL. due to ' + err);
+        process.exit(1)
+    } else {
+        gugulogger.info('Connect to local MySQL successfully');
+        console.log('Connect to local MySQL successfully');
+        app.listen(app.get('port'), function () {
+            console.log('Server starts on port: ' + app.get('port'));
+        });
+    }
 });
 
 
