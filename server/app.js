@@ -11,9 +11,10 @@ var expressValidator = require('express-validator');
 var mysqlDB = require('./utility/db');
 var gugulogger = log4js.getLogger('gugulogger');
 
+
 // Route Files
 var routes = require('./routes/index');
-var users = require('./routes/users');
+var restaurants = require('./routes/restaurant');
 
 //init app
 var app = express();
@@ -95,24 +96,12 @@ app.get('*', function(req, res, next){
 // Routes
 app.use('/', routes);
 // app.use('/genres', genres);
-app.use('/users', users);
+app.use('/restaurants', restaurants);
 
 app.set('port', (process.env.PORT || 3002));
 
 // Connect to MySQL on start
-mysqlDB.connect(mysqlDB.MODE_PRODUCTION, function(err) {
-    if (err) {
-        console.log('Unable to connect to MySQL.');
-        gugulogger.error('Unable to connect to MySQL. due to ' + err);
-        process.exit(1)
-    } else {
-        gugulogger.info('Connect to local MySQL successfully');
-        console.log('Connect to local MySQL successfully');
-        app.listen(app.get('port'), function () {
-            console.log('Server starts on port: ' + app.get('port'));
-        });
-    }
-});
+mysqlDB.connect();
 
 
 module.exports = app;

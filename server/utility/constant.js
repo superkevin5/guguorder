@@ -11,5 +11,7 @@ module.exports = Object.freeze({
     PreconditionFailed: 412,
     ExpectationFailed: 417,
     UnprocessableEntity: 422,
-    FailedDependency: 424
+    FailedDependency: 424,
+    InternalServerError:500,
+    ok:200
 });

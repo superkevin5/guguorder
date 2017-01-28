@@ -1,57 +1,71 @@
 /**
  * Created by Luming on 1/17/2017.
  */
-var mysql = require('mysql')
-    , async = require('async');
+var mysql = require('mysql');
+var log4js = require("log4js");
+var logger = log4js.getLogger('gugulogger');
 
-var PRODUCTION_DB = 'guguorder'
-    , TEST_DB = 'guguorder';
+var pool      =    mysql.createPool({
+    connectionLimit : 100, //important
+    host     : 'localhost',
+    user     : 'root',
+    password : 'a',
+    database : 'guguorder',
+    debug    :  false
+});
 
-exports.MODE_TEST = 'mode_test';
-exports.MODE_PRODUCTION = 'mode_production';
 
-var state = {
-    pool: null,
-    mode: null
-};
+exports.connect = function (req,res) {
 
-exports.connect = function(mode, done) {
-    state.pool = mysql.createPool({
-        host: 'localhost',
-        user: 'root',
-        password: 'a',
-        database: mode === exports.MODE_PRODUCTION ? PRODUCTION_DB : TEST_DB
+    pool.getConnection(function(err,connection){
+        if (err) {
+            logger.error('unable to connect to mysql due to ' + err);
+        }
+        logger.debug('connected as id ' + connection.threadId);
+        connection.release();
+        logger.debug('Connection ' +  connection.threadId + ' released');
     });
-
-    state.mode = mode;
-
-    done()
 };
 
-exports.get = function() {
-    return state.pool
+exports.updateRecord = function (model, obj, criteria, callback){
+    var sql = 'update ?? set ? where ';
+    var options = [model.name, obj], link = '';
+    for (var key in criteria) {
+        options.push(key);
+        options.push(criteria[key]);
+        sql += link + '?? = ?';
+        link = ' and ';
+    }
+    sql += ';';
+    pool.query(sql, options, callback);
 };
 
-exports.fixtures = function(data) {
-    var pool = state.pool;
-    if (!pool) return done(new Error('Missing database connection.'));
 
-    var names = Object.keys(data.tables);
-    async.each(names, function(name, cb) {
-        async.each(data.tables[name], function(row, cb) {
-            var keys = Object.keys(row)
-                , values = keys.map(function(key) { return "'" + row[key] + "'" });
 
-            pool.query('INSERT INTO ' + name + ' (' + keys.join(',') + ') VALUES (' + values.join(',') + ')', cb)
-        }, cb)
-    }, done)
-};
 
-exports.drop = function(tables, done) {
-    var pool = state.pool;
-    if (!pool) return done(new Error('Missing database connection.'));
+exports.selectRecord = function(table, criteria, range, callback) {
+    var sql = "SELECT * FROM ?? WHERE "  ;
+    // get a connection from the pool
 
-    async.each(tables, function(name, cb) {
-        pool.query('DELETE * FROM ' + name, cb)
-    }, done)
+    var options = [table], link = '';
+    for (var key in criteria) {
+        options.push(key);
+        options.push(criteria[key]);
+        sql += link + '??=?';
+        link = ' and ';
+    }
+
+    pool.getConnection(function(err, connection) {
+        if(err) { logger.error(err); callback(true); return; }
+        // make the query
+        connection.query(sql, options, function(err, results) {
+            connection.release();
+            if(err) {
+                logger.error(err);
+                callback(true);
+                return;
+            }
+            callback(false, results);
+        });
+    });
 };

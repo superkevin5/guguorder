@@ -4,6 +4,9 @@ var GUGUError = require('../model/error.js');
 var GUGUContants = require('../utility/constant.js');
 var log4js = require("log4js");
 var logger = log4js.getLogger('gugulogger');
+var restaurantDao = require('../model/restaurant.js');
+
+
 
 router.get('/register', function(req, res, next) {
 
@@ -12,6 +15,13 @@ router.get('/register', function(req, res, next) {
 });
 
 router.get('/login', function(req, res, next) {
+
+	restaurantDao.select({username:'northern'},null,function(flag,data){
+		console.log(data);
+		console.log('www');
+	});
+
+
 	res.json({"foo": "bar"});
 });
 
@@ -26,41 +36,25 @@ router.post('/login', function(req, res, next) {
 	req.checkBody('token', 'Token is required').notEmpty();
 	var errors = req.validationErrors();
 
-	if(errors && errors.length >0 ){
+	if(errors && errors.length > 0 ){
 		res.status(GUGUContants.NotAcceptable);
 		res.json(new GUGUError(GUGUContants.NotAcceptable, {
 			message: errors
 		}));
+		return;
 	}
-    //
-	// // Validation
-	// req.checkBody('email', 'Email is required').notEmpty();
-	// req.checkBody('email', 'Email is not valid').isEmail();
-	// req.checkBody('password', 'Password is required').notEmpty();
-    //
-	// var errors = req.validationErrors();
-    //
-	// if(errors){
-	// 	res.render('users/login', {
-	// 		errors: errors
-	// 	});
-	// } else {
-	// 	fbRef.authWithPassword({
-	// 		email: email,
-	// 		password: password
-	// 	}, function(error, authData){
-	// 		if(error){
-	// 			console.log("Login Failed: ", error);
-	// 			req.flash('error_msg', 'Login Failed');
-	// 			res.redirect('/users/login');
-	// 		} else {
-	// 			console.log("Authenticated user with uid:",authData);
-    //
-	// 			req.flash('success_msg', 'You are now logged in');
-	// 			res.redirect('/albums');
-	// 		}
-	// 	});
-	// }
+
+	restaurantDao.select({username:email, password: token},null,function(hasError, data){
+		if(hasError) {
+			res.status(GUGUContants.InternalServerError);
+			res.json(new GUGUError(GUGUContants.InternalServerError, {
+				message: data
+			}));
+		} else {
+			res.status(GUGUContants.ok);
+			res.json(data);
+		}
+	});
 });
 
 // Logout User
