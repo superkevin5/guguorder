@@ -1,6 +1,5 @@
-DuduOrder V1.0.0.1
+GuguOrder V1.0.0.1
 
-### 目录结构：
 ---
 - style — 存放独立wxcss文件，可import引入
 - image — 存放项目图片
