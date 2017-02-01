@@ -6,11 +6,13 @@ var fs = require('fs');
 var util = require('util');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var bcrypt = require('bcryptjs');
 var session = require('express-session');
 var expressValidator = require('express-validator');
 var mysqlDB = require('./utility/db');
 var gugulogger = log4js.getLogger('gugulogger');
-
+var passport = require('passport');
+var flash = require('connect-flash');
 
 // Route Files
 var routes = require('./routes/index');
@@ -26,19 +28,19 @@ var accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), {
 app.use(morgan('combined', {stream: accessLogStream}));
 var logStdout = process.stdout;
 
+// Handle Sessions
+app.use(session({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Body Parser
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 
+//flash
+app.use(flash());
 
-// Handle Sessions
-app.use(session({
-    secret: 'secret',
-    saveUninitialized: true,
-    resave: true
-}));
 
 // Validator
 app.use(expressValidator({

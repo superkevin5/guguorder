@@ -1,18 +1,43 @@
 /** user.js **/
 
 var mysqlDB = require('../utility/db');
+var bcrypt = require('bcryptjs');
 
+var restaurant = function(id,name,username,password,rating,description,phoneNumber,wechatId,imagePath,addressId) {
+	this.id = id;
+	this.name = name;
+	this.username = username;
+	this.rating = rating;
+	this.description = description;
+	this.phoneNumber = phoneNumber;
+	this.wechatId = wechatId;
+	this.imagePath = imagePath;
+	this.addressId = addressId;
+};
 
-exports.insert = function (obj, callback) {
+restaurant.insert = function (obj, callback) {
 	mysqlDB.insertRecord('restaurant', obj, callback);
 };
-exports.remove = function (criteria, callback) {
+restaurant.remove = function (criteria, callback) {
 	mysqlDB.removeRecord('restaurant', criteria, callback);
 };
-exports.update = function (obj, criteria, callback) {
+restaurant.update = function (obj, criteria, callback) {
 	mysqlDB.updateRecord('restaurant', obj, criteria, callback);
 };
-exports.select = function (criteria, range, callback) {
+
+restaurant.select = function (criteria, range, callback) {
 	mysqlDB.selectRecord('restaurant', criteria, range, callback);
 };
 
+restaurant.comparePassword = function(candidatePassword, hash, callback){
+	bcrypt.compare(candidatePassword, hash, function(err, isMatch) {
+		callback(null, isMatch);
+	});
+}
+
+
+restaurant.findById = function (id, callback) {
+	mysqlDB.selectRecord('restaurant', {restaurantId:id}, null, callback);
+};
+
+module.exports = restaurant;

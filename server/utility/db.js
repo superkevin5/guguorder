@@ -40,8 +40,20 @@ exports.updateRecord = function (model, obj, criteria, callback){
     pool.query(sql, options, callback);
 };
 
-
-
+exports.insertRecord = function (table, obj, callback) {
+    pool.getConnection(function (err, connection) {
+        if (err) {
+            logger.error(err);
+            callback(true, err);
+            return;
+        }
+        connection.query('INSERT INTO ' + table + ' SET ?', obj, function (err, results) {
+            if(err) { logger.error(err); callback(true,err); return; }
+            var str = 'Last insert ID:' + results.insertId;
+            callback(false, str);
+        });
+    });
+};
 
 exports.selectRecord = function(table, criteria, range, callback) {
     var sql = "SELECT * FROM ?? WHERE "  ;
@@ -56,13 +68,13 @@ exports.selectRecord = function(table, criteria, range, callback) {
     }
 
     pool.getConnection(function(err, connection) {
-        if(err) { logger.error(err); callback(true); return; }
+        if(err) { logger.error(err); callback(true,err); return; }
         // make the query
         connection.query(sql, options, function(err, results) {
             connection.release();
             if(err) {
                 logger.error(err);
-                callback(true);
+                callback(true,err);
                 return;
             }
             callback(false, results);
