@@ -12,16 +12,56 @@ var restaurant = require('../model/restaurant.js');
 
 router.post('/register', function (req, res, next) {
 
-    var restaurantNew ={name: 'ddd'};
-    restaurant.insert(restaurantNew, function(hasError,data){
-        if(!hasError) {
-            res.status(GUGUContants.ok);
-            res.json(data);
-        } else {
-            res.status(GUGUContants.InternalServerError);
-            res.end();
+        var restaurantName = req.body.name;
+        var restaurantUsername = req.body.username;
+        var restaurantPassword = req.body.password;
+        var restaurantDescription = req.body.description;
+        var restaurantPhoneNumber = req.body.phoneNumber;
+        var restaurantWechatId = req.body.wechatId;
+        var restaurantImagePath = req.body.imagePath;
+        //var restaurantAddress = req.body.imagePath;
+
+        req.checkBody('name', 'Name is required').notEmpty();
+        req.checkBody('username', 'username is required').notEmpty();
+        req.checkBody('password', 'password is required').notEmpty();
+        req.checkBody('description', 'description is required').notEmpty();
+        req.checkBody('phoneNumber', 'phoneNumber is required').notEmpty();
+        var errors = req.validationErrors();
+        if(errors && errors.length >0 ){
+            res.status(GUGUContants.NotAcceptable);
+            res.json(new GUGUError(GUGUContants.NotAcceptable, {
+                message: errors
+            }));
+            return;
         }
+
+    var restaurantNew = {
+        name: restaurantName,
+        username: restaurantUsername,
+        password: restaurantPassword,
+        rating: null,
+        description: restaurantDescription,
+        phoneNumber: restaurantPhoneNumber,
+        wechatId:restaurantWechatId,
+        imagePath: restaurantImagePath
+    };
+
+    bcrypt.hash(restaurantNew.password, 10, function(err, hash) {
+        // Store hash in your password DB.
+        restaurantNew.password = hash;
+        restaurant.insert(restaurantNew, function(hasError,data){
+            if(!hasError) {
+                res.status(GUGUContants.ok);
+                res.json(data);
+            } else {
+                res.status(GUGUContants.InternalServerError);
+                res.end();
+            }
+        });
     });
+
+
+
 });
 
 router.get('/login', function (req, res, next) {
@@ -45,15 +85,26 @@ passport.use(new localStrategy({
     },
     function (username, password, done) {
 
-        console.log(hashPassword(password));
-        restaurant.select({username: username, password: password}, null, function (hasError, data) {
+
+        restaurant.select({username: username}, null, function (hasError, data) {
             if (hasError) {
                 return done(data);
             } else {
-                if (data.length > 0) {
-                    return done(null, data);
-                } else {
-                    return done(null, false, {message: 'Invalid username or password'});
+                if (data.length > 1) {
+                    return done(null, false, {message: 'Duplicated username exists'});
+                } else if (data.length === 1) {
+
+                    var hash = data[0].password;
+                    bcrypt.compare(password, hash).then(function (res) {
+                        if (res) {
+                            return done(null, data);
+                        } else {
+                            return done(null, false, {message: 'Password not matched'});
+                        }
+                    });
+                }
+                else {
+                    return done(null, false, {message: 'Username does not exist'});
                 }
             }
         });
