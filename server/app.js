@@ -1,39 +1,46 @@
 var express = require('express');
 var path = require('path');
-var logger = require('morgan');
+var morgan = require('morgan');
+var log4js = require("log4js");
+var fs = require('fs');
+var util = require('util');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var bcrypt = require('bcryptjs');
 var session = require('express-session');
 var expressValidator = require('express-validator');
-
-
+var mysqlDB = require('./utility/db');
+var gugulogger = log4js.getLogger('gugulogger');
+var passport = require('passport');
+var flash = require('connect-flash');
 
 // Route Files
 var routes = require('./routes/index');
-var users = require('./routes/users');
+var restaurants = require('./routes/restaurant');
 
 //init app
 var app = express();
 
-// // View Engine
-// app.set('views', path.join(__dirname, 'views'));
-// app.set('view engine', 'ejs');
-
 // Logger
-app.use(logger('dev'));
+log4js.loadAppender('file');
+log4js.addAppender(log4js.appenders.file(path.join(__dirname, 'access.log')), 'gugulogger');
+var accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), {flags: 'a'});
+app.use(morgan('combined', {stream: accessLogStream}));
+var logStdout = process.stdout;
+
+// Handle Sessions
+app.use(session({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Body Parser
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 
+//flash
+app.use(flash());
 
-// Handle Sessions
-app.use(session({
-    secret: 'secret',
-    saveUninitialized: true,
-    resave: true
-}));
 
 // Validator
 app.use(expressValidator({
@@ -75,9 +82,6 @@ app.use(function(err, req, res, next) {
     });
 });
 
-module.exports = app;
-
-
 
 
 //// Get User Info
@@ -94,10 +98,12 @@ app.get('*', function(req, res, next){
 // Routes
 app.use('/', routes);
 // app.use('/genres', genres);
-app.use('/users', users);
+app.use('/restaurants', restaurants);
 
 app.set('port', (process.env.PORT || 3002));
 
-app.listen(app.get('port'), function () {
-    console.log('Server starts on port: ' + app.get('port'));
-});
+// Connect to MySQL on start
+mysqlDB.connect();
+
+
+module.exports = app;
