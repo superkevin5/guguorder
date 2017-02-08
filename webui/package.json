@@ -1,0 +1,13 @@
+{
+  "name": "guguorder",
+  "version": "1.0.0",
+  "description": "guguorder website",
+  "main": "index.html",
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "Boris Xu",
+  "license": "ISC"
+}
