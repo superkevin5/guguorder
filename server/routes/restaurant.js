@@ -65,16 +65,37 @@ router.post('/register', function (req, res, next) {
 });
 
 router.get('/login', function (req, res, next) {
-    res.json({"foo": "bar"});
+    return res.send('wwwwwwwww');
+    // console.log(req.isAuthenticated());
+    // return res.send(req.isAuthenticated() ? req.user : 'Not Logged!');
 });
 
+var isAuthenticated = function(req,res,next){
+    if(req.user) {
+        console.log(req.user);
+        return next();
+    }
+    else
+        return res.status(401).json({
+            error: 'User not authenticated'
+        })
+
+};
+
+router.get('/checkauth', isAuthenticated, function(req, res){
+    res.status(200).json({
+        status: 'Login successful!'
+    });
+});
 
 passport.serializeUser(function (user, done) {
-    done(null, user);
+    console.log(user);
+    done(null, user.restaurantID);
 });
 
-passport.deserializeUser(function (id, done) {
-    restaurant.findById(id, function (err, user) {
+passport.deserializeUser(function (restaurantID, done) {
+    console.log(restaurantID);
+    restaurant.findById(restaurantID, function (err, user) {
         done(err, user);
     });
 });
@@ -84,7 +105,6 @@ passport.use(new localStrategy({
         passwordField: 'token'
     },
     function (username, password, done) {
-
 
         restaurant.select({username: username}, null, function (hasError, data) {
             if (hasError) {
@@ -97,7 +117,7 @@ passport.use(new localStrategy({
                     var hash = data[0].password;
                     bcrypt.compare(password, hash).then(function (res) {
                         if (res) {
-                            return done(null, data);
+                            return done(null, data[0]);
                         } else {
                             return done(null, false, {message: 'Password not matched'});
                         }
@@ -112,20 +132,24 @@ passport.use(new localStrategy({
 
 router.post('/login', bodyParser.urlencoded({extended: true}), function (req, res, next) {
     passport.authenticate('local', function (err, restaurant, info) {
+        console.log('---------');
         if (err) {
             return next(err)
         }
+
         if (!restaurant) {
-            req.session.messages = [info.message];
-            res.status(GUGUContants.Forbidden);
-            return res.json(req.session.messages);
+            req.logout();
+            res.status(GUGUContants.ok);
+            return res.json(info.message);
         }
+
         req.logIn(restaurant, function (err) {
             if (err) {
                 return next(err);
             }
-            res.cookie('guguRestaurant', restaurant, {maxAge: 900000, httpOnly: true});
-            req.session.restaurant = restaurant;
+            logger.info('Login success!');
+            // res.cookie('guguRestaurant', restaurant, {maxAge: 900000, httpOnly: true});
+            //req.session.restaurant = restaurant;
             return res.json(restaurant);
         });
     })(req, res, next);
@@ -133,7 +157,9 @@ router.post('/login', bodyParser.urlencoded({extended: true}), function (req, re
 
 // Logout User
 router.get('/logout', function (req, res) {
-    res.clearCookie('guguRestaurant');
+    // res.clearCookie('guguRestaurant');
+    req.logout();
+    res.json('session cleared');
 });
 
 

@@ -1,0 +1,14 @@
+<div class="container login">
+	<div class="login-container">
+		<div id="output"></div>
+		<div class="avatar"></div>
+		<div class="form-box">
+			<form method="POST" id="loginForm" action="#">
+				<input name="email" type="text" ng-model="username" placeholder="username">
+				<input name="token" type="password"  ng-model="password" placeholder="password">
+			</form>
+			<button class="btn btn-info btn-block" id="login" ng-click="submit()">Login</button>
+		</div>
+	</div>
+</div>
+<pre>{{username|json}}</pre>

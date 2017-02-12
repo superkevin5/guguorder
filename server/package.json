@@ -15,6 +15,7 @@
     "connect-flash": "^0.1.1",
     "cookie-parser": "*",
     "express": "*",
+    "express-mysql-session": "^1.2.0",
     "express-session": "*",
     "express-validator": "*",
     "log4js": "^1.1.0",
