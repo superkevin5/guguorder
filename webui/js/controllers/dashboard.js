@@ -8,10 +8,16 @@
  * Controller of guguorderapp
  */
 angular.module('guguorderapp')
-  .controller('DashboardCtrl', function($scope, $state) {
+  .controller('DashboardCtrl', function($scope, $state, LoginService) {
 
-    $scope.$state = $state;
 
+      LoginService.isAuthenticated().$promise.then(function(data) {
+
+          console.log(data);
+
+
+
+      });
 
 
 

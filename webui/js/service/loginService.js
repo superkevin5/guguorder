@@ -8,10 +8,9 @@ angular.module('guguorderapp').factory('LoginService', ['$resource','guguConstan
             withCredentials: true,
             method: 'POST'
         },
-        testlogin: {
-            url: guguConstant.APIROOTPATH + 'restaurants/login',
+        isAuthenticated: {
+            url: guguConstant.APIROOTPATH + 'restaurants/checkauth',
             method: 'GET'
         }
-
     });
 }]);

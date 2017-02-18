@@ -22,8 +22,8 @@ angular
   .config(['$httpProvider', function ($httpProvider) {
         // $httpProvider.defaults.headers.put['Content-Type'] = 'application/x-www-form-urlencoded';
         // // $httpProvider.defaults.headers.post['Content-Type'] =  'application/x-www-form-urlencoded';
-        // $httpProvider.defaults.withCredentials = true;
-        // delete $httpProvider.defaults.headers.common['X-Requested-With'];
+        $httpProvider.defaults.withCredentials = true;
+        delete $httpProvider.defaults.headers.common['X-Requested-With'];
         $httpProvider.interceptors.push('GuguInterceptor');
   }])
   .config(function($stateProvider, $urlRouterProvider) {
