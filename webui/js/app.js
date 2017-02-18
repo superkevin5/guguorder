@@ -55,18 +55,16 @@ angular
   }).run(function($rootScope, $state, LoginService) {
 
     $rootScope.$on('$stateChangeStart', function(e, toState, toParams, fromState, fromParams) {
-        if($state.is('login')){
+        if(!$state.is('login')){
             LoginService.isAuthenticated().$promise.then(function(data){
                 console.log(data);
                 if(data.status != 'success') {
-                    $state.go('dashboard');
+                    $state.go('login');
                 }
             }, function(error){
                 $state.go('login');
             });
         }
-
     });
-
 
 });

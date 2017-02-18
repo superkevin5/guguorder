@@ -11,6 +11,10 @@ angular.module('guguorderapp').factory('LoginService', ['$resource','guguConstan
         isAuthenticated: {
             url: guguConstant.APIROOTPATH + 'restaurants/checkauth',
             method: 'GET'
+        },
+        logout: {
+            url: guguConstant.APIROOTPATH + 'restaurants/logout',
+            method: 'GET'
         }
     });
 }]);

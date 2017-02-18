@@ -69,6 +69,8 @@ router.get('/login', function (req, res, next) {
 });
 
 var isAuthenticated = function(req,res,next){
+
+    console.log(req.user);
     if(req.user) {
         return next();
     }
