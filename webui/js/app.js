@@ -37,9 +37,9 @@ angular
           controller: 'LoginCtrl'
         })
         .state('dashboard', {
-          url: '/dashboard',
-          templateUrl: 'views/dashboard.html',
-          controller: 'DashboardCtrl'
+            url: '/dashboard',
+            templateUrl: 'views/dashboard.html',
+            controller: 'DashboardCtrl'
         })
           .state('overview', {
             url: '/overview',
@@ -52,9 +52,21 @@ angular
             templateUrl: 'views/dashboard/reports.html'
           });
 
-  }).run(function() {
+  }).run(function($rootScope, $state, LoginService) {
 
+    $rootScope.$on('$stateChangeStart', function(e, toState, toParams, fromState, fromParams) {
+        if($state.is('login')){
+            LoginService.isAuthenticated().$promise.then(function(data){
+                console.log(data);
+                if(data.status != 'success') {
+                    $state.go('dashboard');
+                }
+            }, function(error){
+                $state.go('login');
+            });
+        }
 
+    });
 
 
 });

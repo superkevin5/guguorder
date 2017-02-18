@@ -6,7 +6,6 @@ var fs = require('fs');
 var util = require('util');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var bcrypt = require('bcryptjs');
 var session = require('express-session');
 var MySQLStore = require('express-mysql-session')(session);
 var expressValidator = require('express-validator');
@@ -31,16 +30,16 @@ var logStdout = process.stdout;
 
 // Handle Sessions
 //Session
-var sessionStore = new MySQLStore(GUGUContants.dbOptions2);
+
+var connection = mysqlDB.getConnection(GUGUContants.dbOptions2); // or mysql.createPool(options);
+var sessionStore = new MySQLStore({}/* session store options */, connection);
+
 app.use(session({
-    genid: function(req) {
-        return genuuid(); // use UUIDs for session IDs
-    },
-    secret: 'keyboard cat',
-    resave: false,
-    saveUninitialized: true,
-    cookie: { httpOnly: false, maxAge: 60000, secure: false },
-    store: sessionStore
+    key: 'session_cookie_name',
+    secret: 'session_cookie_secret',
+    store: sessionStore,
+    resave: true,
+    saveUninitialized: true
 }));
 
 app.use(passport.initialize());
@@ -52,7 +51,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 
 app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Origin", "http://localhost:3000");
     res.header("Access-Control-Allow-Credentials", "true");
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
     res.header("Access-Control-Allow-Headers", "Content-Type");

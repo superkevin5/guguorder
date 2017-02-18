@@ -84,7 +84,7 @@ var isAuthenticated = function(req,res,next){
 
 router.get('/checkauth', isAuthenticated, function(req, res){
     res.status(200).json({
-        status: 'Login successful!'
+        status: 'success'
     });
 });
 
@@ -132,7 +132,6 @@ passport.use(new localStrategy({
 
 router.post('/login', bodyParser.urlencoded({extended: true}), function (req, res, next) {
     passport.authenticate('local', function (err, restaurant, info) {
-        console.log('---------');
         if (err) {
             return next(err)
         }
@@ -140,7 +139,7 @@ router.post('/login', bodyParser.urlencoded({extended: true}), function (req, re
         if (!restaurant) {
             req.logout();
             res.status(GUGUContants.ok);
-            return res.json(info.message);
+            return res.json({message:info.message});
         }
 
         req.logIn(restaurant, function (err) {
