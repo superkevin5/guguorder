@@ -33,7 +33,7 @@ restaurant.comparePassword = function(candidatePassword, hash, callback){
 	bcrypt.compare(candidatePassword, hash, function(err, isMatch) {
 		callback(null, isMatch);
 	});
-}
+};
 
 
 restaurant.findById = function (id, callback) {

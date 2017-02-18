@@ -6,14 +6,14 @@ var fs = require('fs');
 var util = require('util');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var bcrypt = require('bcryptjs');
 var session = require('express-session');
+var MySQLStore = require('express-mysql-session')(session);
 var expressValidator = require('express-validator');
 var mysqlDB = require('./utility/db');
 var gugulogger = log4js.getLogger('gugulogger');
 var passport = require('passport');
 var flash = require('connect-flash');
-
+var GUGUContants = require('./utility/constant.js');
 // Route Files
 var routes = require('./routes/index');
 var restaurants = require('./routes/restaurant');
@@ -29,7 +29,19 @@ app.use(morgan('combined', {stream: accessLogStream}));
 var logStdout = process.stdout;
 
 // Handle Sessions
-app.use(session({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
+//Session
+
+var connection = mysqlDB.getConnection(GUGUContants.dbOptions2); // or mysql.createPool(options);
+var sessionStore = new MySQLStore({}/* session store options */, connection);
+
+app.use(session({
+    key: 'session_cookie_name',
+    secret: 'session_cookie_secret',
+    store: sessionStore,
+    resave: true,
+    saveUninitialized: true
+}));
+
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -37,6 +49,15 @@ app.use(passport.session());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
+
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+    res.header("Access-Control-Allow-Credentials", "true");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    res.header("Access-Control-Allow-Headers", "Content-Type");
+    res.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
+    next();
+});
 
 //flash
 app.use(flash());
@@ -76,7 +97,7 @@ if (app.get('env') === 'development') {
 // no stacktraces leaked to user
 app.use(function(err, req, res, next) {
     res.status(err.status || 500);
-    res.render('error', {
+    res.json({
         message: err.message,
         error: {}
     });
@@ -85,15 +106,11 @@ app.use(function(err, req, res, next) {
 
 
 //// Get User Info
-app.get('*', function(req, res, next){
-    //if(fbRef.getAuth() != null){
-    //    var userRef = new Firebase('https://albumz01.firebaseio.com/users/');
-    //    userRef.orderByChild("uid").startAt(fbRef.getAuth().uid).endAt(fbRef.getAuth().uid).on("child_added", function(snapshot) {
-    //        res.locals.user = snapshot.val();
-    //    });
-    //}
+app.post('*', function(req, res, next){
+    console.log('post incoming');
     next();
 });
+
 
 // Routes
 app.use('/', routes);
@@ -104,6 +121,6 @@ app.set('port', (process.env.PORT || 3002));
 
 // Connect to MySQL on start
 mysqlDB.connect();
-
+// sessionStore.close();
 
 module.exports = app;

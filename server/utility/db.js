@@ -4,16 +4,13 @@
 var mysql = require('mysql');
 var log4js = require("log4js");
 var logger = log4js.getLogger('gugulogger');
+var GUGUContants = require('../utility/constant.js');
+var pool      =    mysql.createPool(GUGUContants.dbOptions);
 
-var pool      =    mysql.createPool({
-    connectionLimit : 100, //important
-    host     : 'localhost',
-    user     : 'root',
-    password : 'a',
-    database : 'guguorder',
-    debug    :  false
-});
 
+exports.getConnection = function() {
+  return mysql.createConnection(GUGUContants.dbOptions);
+};
 
 exports.connect = function (req,res) {
 
@@ -77,7 +74,13 @@ exports.selectRecord = function(table, criteria, range, callback) {
                 callback(true,err);
                 return;
             }
-            callback(false, results);
+
+            if(!results || Array.isArray(results) && results.length === 0) {
+                callback(false, null);
+            } else {
+                callback(false, results);
+            }
+
         });
     });
 };
