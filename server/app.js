@@ -107,8 +107,6 @@ app.use(function(err, req, res, next) {
 
 //// Get User Info
 app.post('*', function(req, res, next){
-    // var session = req.session;
-    // console.log(session);
     console.log('post incoming');
     next();
 });

@@ -65,14 +65,11 @@ router.post('/register', function (req, res, next) {
 });
 
 router.get('/login', function (req, res, next) {
-    return res.send('wwwwwwwww');
-    // console.log(req.isAuthenticated());
-    // return res.send(req.isAuthenticated() ? req.user : 'Not Logged!');
+    return res.send('login test');
 });
 
 var isAuthenticated = function(req,res,next){
     if(req.user) {
-        console.log(req.user);
         return next();
     }
     else
@@ -89,12 +86,10 @@ router.get('/checkauth', isAuthenticated, function(req, res){
 });
 
 passport.serializeUser(function (user, done) {
-    console.log(user);
     done(null, user.restaurantID);
 });
 
 passport.deserializeUser(function (restaurantID, done) {
-    console.log(restaurantID);
     restaurant.findById(restaurantID, function (err, user) {
         done(err, user);
     });
