@@ -107,9 +107,11 @@ passport.use(new localStrategy({
             if (hasError) {
                 return done(data);
             } else {
-                if (data.length > 1) {
+
+                console.log(data);
+                if (data && data.length > 1) {
                     return done(null, false, {message: 'Duplicated username exists'});
-                } else if (data.length === 1) {
+                } else if (data && data.length === 1) {
 
                     var hash = data[0].password;
                     bcrypt.compare(password, hash).then(function (res) {
