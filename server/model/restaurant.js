@@ -3,7 +3,7 @@
 var mysqlDB = require('../utility/db');
 var bcrypt = require('bcryptjs');
 
-var restaurant = function(id,name,username,password,rating,description,phoneNumber,wechatId,imagePath,addressId) {
+var restaurant = function(id,name,username,password,rating,description,phoneNumber,wechatId,imagePath) {
 	this.id = id;
 	this.name = name;
 	this.username = username;
@@ -12,7 +12,6 @@ var restaurant = function(id,name,username,password,rating,description,phoneNumb
 	this.phoneNumber = phoneNumber;
 	this.wechatId = wechatId;
 	this.imagePath = imagePath;
-	this.addressId = addressId;
 };
 
 restaurant.insert = function (obj, callback) {

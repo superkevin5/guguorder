@@ -3,12 +3,13 @@
 var mysqlDB = require('../utility/db');
 var bcrypt = require('bcryptjs');
 
-var dish = function(dishId,diskImagePath,dishPrice,popularity,description,restaurantId) {
+var dish = function(dishId,diskImagePath,dishPrice,popularity,description,title,restaurantId) {
 	this.dishId = dishId;
 	this.diskImagePath = diskImagePath;
 	this.dishPrice = dishPrice;
 	this.popularity = popularity;
 	this.description = description;
+	this.title = title;
 	this.restaurantId = restaurantId;
 };
 
