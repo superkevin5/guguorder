@@ -161,6 +161,22 @@ router.get('/logout', function (req, res) {
 });
 
 
+
+router.get('/search/:username', function (req, res) {
+    req.checkParams('username', 'username is empty').notEmpty();
+    var username = req.params.username;
+
+    restaurant.select({username: username}, null, function (hasError, data) {
+
+
+
+
+    });
+    res.json('session cleared');
+});
+
+
+
 function hashPassword(password) {
     var salt = bcrypt.hashSync("bacon");
     var hashedPassword = bcrypt.hashSync( password, salt );
