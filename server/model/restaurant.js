@@ -36,7 +36,7 @@ restaurant.comparePassword = function(candidatePassword, hash, callback){
 
 
 restaurant.findById = function (id, callback) {
-	mysqlDB.selectRecord('restaurant', {restaurantId:id}, null, callback);
+	mysqlDB.selectRecord('restaurant', {id:id}, null, callback);
 };
 
 module.exports = restaurant;

@@ -12,7 +12,7 @@ angular.module('guguorderapp')
     $scope.submit = function() {
         LoginService.login({email: $scope.username, token: $scope.password}).$promise.then(function(data){
             if(data) {
-                if(data.restaurantID){
+                if(data.id){
                     $state.go('dashboard');
                 } else {
                     toaster.pop('error', data.message);

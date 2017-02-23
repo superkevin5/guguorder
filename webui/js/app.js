@@ -52,19 +52,16 @@ angular
             templateUrl: 'views/dashboard/reports.html'
           });
 
-  }).run(function($rootScope, $state, LoginService) {
-
-    $rootScope.$on('$stateChangeStart', function(e, toState, toParams, fromState, fromParams) {
-        if(!$state.is('login')){
-            LoginService.isAuthenticated().$promise.then(function(data){
-                console.log(data);
-                if(data.status != 'success') {
+  }).run(function ($rootScope, $state, $location, LoginService) {
+    $rootScope.$on('$locationChangeStart', function (event) {
+        if ($location.path() != '/login') {
+            LoginService.isAuthenticated().$promise.then(function (data) {
+                if (data.status != 'success') {
                     $state.go('login');
                 }
-            }, function(error){
+            }, function (error) {
                 $state.go('login');
             });
         }
     });
-
 });

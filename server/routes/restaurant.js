@@ -8,7 +8,7 @@ var bcrypt = require('bcryptjs');
 var localStrategy = require('passport-local').Strategy;
 var passport = require('passport');
 var logger = log4js.getLogger('gugulogger');
-var restaurant = require('../model/restaurant.js');
+var Restaurant = require('../model/restaurant.js');
 
 router.post('/register', function (req, res, next) {
 
@@ -19,7 +19,6 @@ router.post('/register', function (req, res, next) {
         var restaurantPhoneNumber = req.body.phoneNumber;
         var restaurantWechatId = req.body.wechatId;
         var restaurantImagePath = req.body.imagePath;
-        //var restaurantAddress = req.body.imagePath;
 
         req.checkBody('name', 'Name is required').notEmpty();
         req.checkBody('username', 'username is required').notEmpty();
@@ -49,7 +48,7 @@ router.post('/register', function (req, res, next) {
     bcrypt.hash(restaurantNew.password, 10, function(err, hash) {
         // Store hash in your password DB.
         restaurantNew.password = hash;
-        restaurant.insert(restaurantNew, function(hasError,data){
+        Restaurant.insert(restaurantNew, function(hasError,data){
             if(!hasError) {
                 res.status(GUGUContants.ok);
                 res.json(data);
@@ -59,26 +58,21 @@ router.post('/register', function (req, res, next) {
             }
         });
     });
-
-
-
 });
 
 router.get('/login', function (req, res, next) {
     return res.send('login test');
 });
 
-var isAuthenticated = function(req,res,next){
 
-    console.log(req.user);
-    if(req.user) {
+var isAuthenticated = function(req,res,next){
+    if(req.isAuthenticated()) {
         return next();
     }
     else
         return res.status(401).json({
             error: 'User not authenticated'
         })
-
 };
 
 router.get('/checkauth', isAuthenticated, function(req, res){
@@ -88,11 +82,11 @@ router.get('/checkauth', isAuthenticated, function(req, res){
 });
 
 passport.serializeUser(function (user, done) {
-    done(null, user.restaurantID);
+    done(null, user.id);
 });
 
 passport.deserializeUser(function (restaurantID, done) {
-    restaurant.findById(restaurantID, function (err, user) {
+    Restaurant.findById(restaurantID, function (err, user) {
         done(err, user);
     });
 });
@@ -103,12 +97,11 @@ passport.use(new localStrategy({
     },
     function (username, password, done) {
 
-        restaurant.select({username: username}, null, function (hasError, data) {
+        Restaurant.select({username: username}, null, function (hasError, data) {
             if (hasError) {
                 return done(data);
             } else {
 
-                console.log(data);
                 if (data && data.length > 1) {
                     return done(null, false, {message: 'Duplicated username exists'});
                 } else if (data && data.length === 1) {
@@ -131,6 +124,7 @@ passport.use(new localStrategy({
 
 router.post('/login', bodyParser.urlencoded({extended: true}), function (req, res, next) {
     passport.authenticate('local', function (err, restaurant, info) {
+        req.logout();
         if (err) {
             return next(err)
         }
@@ -140,14 +134,11 @@ router.post('/login', bodyParser.urlencoded({extended: true}), function (req, re
             res.status(GUGUContants.ok);
             return res.json({message:info.message});
         }
-
         req.logIn(restaurant, function (err) {
             if (err) {
                 return next(err);
             }
             logger.info('Login success!');
-            // res.cookie('guguRestaurant', restaurant, {maxAge: 900000, httpOnly: true});
-            //req.session.restaurant = restaurant;
             return res.json(restaurant);
         });
     })(req, res, next);
@@ -157,25 +148,18 @@ router.post('/login', bodyParser.urlencoded({extended: true}), function (req, re
 router.get('/logout', function (req, res) {
     // res.clearCookie('guguRestaurant');
     req.logout();
+    req.session.destroy();
     res.json('session cleared');
 });
-
-
 
 router.get('/search/:username', function (req, res) {
     req.checkParams('username', 'username is empty').notEmpty();
     var username = req.params.username;
-
-    restaurant.select({username: username}, null, function (hasError, data) {
-
-
-
-
+    Restaurant.select({username: username}, null, function (hasError, data) {
     });
+    req.session.destroy();
     res.json('session cleared');
 });
-
-
 
 function hashPassword(password) {
     var salt = bcrypt.hashSync("bacon");

@@ -28,17 +28,14 @@ var accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), {
 app.use(morgan('combined', {stream: accessLogStream}));
 var logStdout = process.stdout;
 
-// Handle Sessions
 //Session
-
 var connection = mysqlDB.getConnection(GUGUContants.dbOptions2); // or mysql.createPool(options);
 var sessionStore = new MySQLStore({}/* session store options */, connection);
 
 app.use(session({
-    key: 'session_cookie_name',
-    secret: 'session_cookie_secret',
-    store: sessionStore,
+    secret: 'test session',
     resave: true,
+    store: sessionStore,
     saveUninitialized: true
 }));
 
@@ -101,14 +98,6 @@ app.use(function(err, req, res, next) {
         message: err.message,
         error: {}
     });
-});
-
-
-
-//// Get User Info
-app.post('*', function(req, res, next){
-    console.log('post incoming');
-    next();
 });
 
 
