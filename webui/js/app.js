@@ -12,9 +12,9 @@ angular
   .module('guguorderapp', [
     'ui.router',
     'ngAnimate',
-    'ui.bootstrap',
     'ngResource',
-    'toaster'
+    'toaster',
+    'ngMaterial'
   ])
   .config(['$qProvider', function ($qProvider) {
         $qProvider.errorOnUnhandledRejections(false);
