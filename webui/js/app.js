@@ -39,7 +39,8 @@ angular
         .state('dashboard', {
             url: '/dashboard',
             templateUrl: 'views/dashboard.html',
-            controller: 'DashboardCtrl'
+            controller: 'DashboardCtrl',
+            css: 'css/agency.css'
         })
           .state('overview', {
             url: '/overview',
