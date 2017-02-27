@@ -19,6 +19,24 @@ angular
   .config(['$qProvider', function ($qProvider) {
         $qProvider.errorOnUnhandledRejections(false);
    }])
+  .config(function($mdThemingProvider,guguConstant) {
+      $mdThemingProvider
+          .definePalette('customPrimary',
+              guguConstant.CUSTOMPRIMARY);
+      $mdThemingProvider
+          .definePalette('customAccent',
+              guguConstant.CUSTOMACCENT);
+      $mdThemingProvider
+          .definePalette('customWarn',
+              guguConstant.CUSTOMWARN);
+      $mdThemingProvider
+          .definePalette('customBackground',
+              guguConstant.CUSTOMBACKGROUND);
+      $mdThemingProvider.theme('default');
+          // .primaryPalette('customPrimary')
+          // .accentPalette('customAccent')
+          // .warnPalette('customWarn');
+    })
   .config(['$httpProvider', function ($httpProvider) {
         // $httpProvider.defaults.headers.put['Content-Type'] = 'application/x-www-form-urlencoded';
         // // $httpProvider.defaults.headers.post['Content-Type'] =  'application/x-www-form-urlencoded';

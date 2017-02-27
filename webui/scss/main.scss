@@ -74,4 +74,34 @@ and (min-width: 1200px) {
     }
 }
 
+#gugu-logo {
+    height: 100%;
+    width: 100%;
+}
+
+#search-container {
+  padding-bottom: 0px;
+  margin-left: 25px;
+  margin-top: 40px;
+  color: white;
+
+  input::-webkit-input-placeholder {
+    color: white !important;
+  }
+
+  input:-moz-placeholder { /* Firefox 18- */
+    color: white !important;
+  }
+
+  input::-moz-placeholder {  /* Firefox 19+ */
+    color: white !important;
+  }
+
+  input:-ms-input-placeholder {
+    color: white !important;
+  }
+  input {
+    color:white;
+  }
+}
 

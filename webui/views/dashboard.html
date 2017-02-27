@@ -1,54 +1,28 @@
-<md-sidenav class="md-sidenav-right md-whiteframe-z2"
-            md-component-id="right">
-    <md-toolbar layout="row">
-        <div class="md-toolbar-tools">
-            <h2>
-                <span>Side Panel</span>
-            </h2>
-            <span flex></span>
-            <md-button class="md-icon-button" aria-label="Close Side Panel" ng-click="closeSideNavPanel()">
-                <md-tooltip>Close Side Panel</md-tooltip>
-                <md-icon class="md-default-theme" class="material-icons">&#xE5CD;</md-icon>
-            </md-button>
-        </div>
-    </md-toolbar>
-    <md-content layout-padding="">
-    </md-content>
-</md-sidenav>
-
-<md-toolbar class="desktop">
+<md-toolbar class="desktop" >
     <div class="md-toolbar-tools">
         <md-button class="md-icon-button" aria-label="Icon">
             <md-tooltip>Icon</md-tooltip>
-            <md-icon class="md-default-theme" md-svg-icon="fb.svg"></md-icon>
+            <!--<img id="gugu-logo" ng-src="img/gugu.png">-->
         </md-button>
         <h2>
-            <span>Heading</span>
+            <span>GUGUORDER</span>
         </h2>
-        <md-input-container md-no-float class="md-accent" flex="50" style="padding-bottom:0px;margin-left:25px">
-            <md-icon style="color:wheat" class="material-icons">&#xE8B6;</md-icon>
-            <input ng-model="searchInput" placeholder="Search here" style="color:wheat;padding-left:25px;margin-left:5px">
+        <md-input-container md-no-float id="search-container" flex="50">
+            <md-icon class="material-icons">&#xE8B6;</md-icon>
+            <input ng-model="searchInput" placeholder="Search here">
         </md-input-container>
         <span flex></span>
         <md-button class="md-icon-button" aria-label="User">
-            <md-tooltip>User</md-tooltip>
-            <img src="user.png" style="width:24px;height:24px;"/>
+            <md-tooltip>My account</md-tooltip>
+            <md-icon class="material-icons">&#xE853;</md-icon>
         </md-button>
-        <md-button class="md-icon-button" aria-label="Messages">
-            <md-tooltip>Messages</md-tooltip>
-            <img src="messages.png" style="width:24px;height:24px;"/>
+        <md-button class="md-icon-button" aria-label="Upload dish">
+            <md-tooltip>Upload dish</md-tooltip>
+            <md-icon class="material-icons">&#xE2C3;</md-icon>
         </md-button>
-        <md-button class="md-icon-button" aria-label="Create Post">
-            <md-tooltip>Create Post</md-tooltip>
-            <md-icon class="material-icons">&#xE150;</md-icon>
-        </md-button>
-        <md-button class="md-icon-button" aria-label="Settings">
-            <md-tooltip>Settings</md-tooltip>
-            <md-icon class="material-icons">&#xE8B8;</md-icon>
-        </md-button>
-        <md-button class="md-icon-button" aria-label="Alerts">
-            <md-tooltip>Alerts</md-tooltip>
-            <md-icon class="material-icons">&#xE7F4;</md-icon>
+        <md-button class="md-icon-button" aria-label="Log out">
+            <md-tooltip>Log out</md-tooltip>
+            <md-icon class="material-icons">&#xE879;</md-icon>
         </md-button>
         <md-button class="md-icon-button" aria-label="Help">
             <md-tooltip>Help</md-tooltip>
@@ -63,32 +37,25 @@
             <md-icon class="md-default-theme" md-svg-icon="fb.svg"></md-icon>
         </md-button>
         <h2>
-            <span>Heading</span>
+            <span>GUGUORDER</span>
         </h2>
-        <md-input-container md-no-float class="md-accent" flex="50" style="padding-bottom:0px;margin-left:25px">
-            <md-icon style="color:wheat" class="material-icons">&#xE8B6;</md-icon>
-            <input ng-model="searchInput" placeholder="Search here" style="color:wheat;padding-left:25px;margin-left:5px">
+        <md-input-container md-no-float id="search-container" flex="50">
+            <md-icon class="material-icons">&#xE8B6;</md-icon>
+            <input ng-model="searchInput" placeholder="Search here">
         </md-input-container>
         <span flex></span>
+        <span flex></span>
         <md-button class="md-icon-button" aria-label="User">
-            <md-tooltip>User</md-tooltip>
-            <img src="user.png" style="width:24px;height:24px;"/>
+            <md-tooltip>My account</md-tooltip>
+            <md-icon class="material-icons">&#xE853;</md-icon>
         </md-button>
-        <md-button class="md-icon-button" aria-label="Messages">
-            <md-tooltip>Messages</md-tooltip>
-            <img src="messages.png" style="width:24px;height:24px;"/>
+        <md-button class="md-icon-button" aria-label="Upload dish">
+            <md-tooltip>Upload dish</md-tooltip>
+            <md-icon class="material-icons">&#xE2C3;</md-icon>
         </md-button>
-        <md-button class="md-icon-button" aria-label="Create Post">
-            <md-tooltip>Create Post</md-tooltip>
-            <md-icon class="material-icons">&#xE150;</md-icon>
-        </md-button>
-        <md-button class="md-icon-button" aria-label="Settings">
-            <md-tooltip>Settings</md-tooltip>
-            <md-icon class="material-icons">&#xE8B8;</md-icon>
-        </md-button>
-        <md-button class="md-icon-button" aria-label="Alerts">
-            <md-tooltip>Alerts</md-tooltip>
-            <md-icon class="material-icons">&#xE7F4;</md-icon>
+        <md-button class="md-icon-button" aria-label="Log out">
+            <md-tooltip>Log out</md-tooltip>
+            <md-icon class="material-icons">&#xE879;</md-icon>
         </md-button>
         <md-button class="md-icon-button" aria-label="Help">
             <md-tooltip>Help</md-tooltip>
@@ -103,7 +70,7 @@
             <md-icon class="md-default-theme" md-svg-icon="fb.svg"></md-icon>
         </md-button>
         <h2>
-            <span>Heading</span>
+            <span>GUGUORDER</span>
         </h2>
         <span flex></span>
         <md-button class="md-icon-button" aria-label="Search" data-ng-click="showMobileMainHeader = false">
@@ -120,8 +87,9 @@
             <md-tooltip>Back</md-tooltip>
             <md-icon class="material-icons">&#xE5C4;</md-icon>
         </md-button>
-        <md-input-container md-no-float class="md-accent" style="padding-bottom:0px;">
-            <input ng-model="searchInput" placeholder="Search here" style="color:wheat;">
+        <md-input-container md-no-float id="search-container" flex="50">
+            <md-icon class="material-icons">&#xE8B6;</md-icon>
+            <input ng-model="searchInput" placeholder="Search here">
         </md-input-container>
         <span flex></span>
         <md-button class="md-icon-button" aria-label="Search">
@@ -134,24 +102,16 @@
     <md-bottom-sheet class="md-list">
         <md-list>
             <md-list-item>
-                <md-icon class="md-default-theme" class="material-icons">&#xE851;</md-icon>
-                <p>User</p>
+                <md-icon class="material-icons">&#xE853;</md-icon>
+                <p>My account</p>
             </md-list-item>
             <md-list-item>
-                <md-icon class="md-default-theme" class="material-icons">&#xE0C9;</md-icon>
-                <p>Messages</p>
+                <md-icon class="material-icons">&#xE2C3;</md-icon>
+                <p>Upload dish</p>
             </md-list-item>
             <md-list-item>
-                <md-icon class="material-icons">&#xE150;</md-icon>
-                <p>Create Post</p>
-            </md-list-item>
-            <md-list-item>
-                <md-icon class="md-default-theme" class="material-icons">&#xE8B8;</md-icon>
-                <p>Settings</p>
-            </md-list-item>
-            <md-list-item>
-                <md-icon class="material-icons">&#xE7F4;</md-icon>
-                <p>Alerts</p>
+                <md-icon class="material-icons">&#xE879;</md-icon>
+                <p>Log out</p>
             </md-list-item>
             <md-list-item>
                 <md-icon class="material-icons">&#xE887;</md-icon>

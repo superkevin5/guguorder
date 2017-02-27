@@ -58,3 +58,25 @@ body {
     display: none; }
   .mobile {
     display: none; } }
+
+#gugu-logo {
+  height: 100%;
+  width: 100%; }
+
+#search-container {
+  padding-bottom: 0px;
+  margin-left: 25px;
+  margin-top: 40px;
+  color: white; }
+  #search-container input::-webkit-input-placeholder {
+    color: white !important; }
+  #search-container input:-moz-placeholder {
+    /* Firefox 18- */
+    color: white !important; }
+  #search-container input::-moz-placeholder {
+    /* Firefox 19+ */
+    color: white !important; }
+  #search-container input:-ms-input-placeholder {
+    color: white !important; }
+  #search-container input {
+    color: white; }
