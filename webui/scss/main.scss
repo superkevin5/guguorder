@@ -31,9 +31,9 @@ body {
 }
 
 
-* {
-    font-family: 'Kaushan Script';
-}
+//* {
+//    font-family: 'Kaushan Script';
+//}
 @media only screen
 and (max-width: 736px) {
     .mobile {
@@ -105,3 +105,6 @@ and (min-width: 1200px) {
   }
 }
 
+.dishDropZone {
+  height: 400px !important;
+}

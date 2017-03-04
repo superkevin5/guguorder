@@ -10,11 +10,13 @@
  */
 angular
   .module('guguorderapp', [
-    'ui.router',
-    'ngAnimate',
-    'ngResource',
-    'toaster',
-    'ngMaterial'
+      'ui.router',
+      'ngAnimate',
+      'ngResource',
+      'toaster',
+      'ngMaterial',
+      'lfNgMdFileInput',
+      'blockUI'
   ])
   .config(['$qProvider', function ($qProvider) {
         $qProvider.errorOnUnhandledRejections(false);
@@ -55,9 +57,10 @@ angular
           controller: 'LoginCtrl'
         })
         .state('dashboard', {
-            url: '/dashboard',
+            url: '/dashboard/:restaurantId',
             templateUrl: 'views/dashboard.html',
             controller: 'DashboardCtrl',
+            controllerAs: 'vm',
             css: 'css/agency.css'
         })
           .state('overview', {
