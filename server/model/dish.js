@@ -3,9 +3,9 @@
 var mysqlDB = require('../utility/db');
 var bcrypt = require('bcryptjs');
 
-var dish = function(dishId,diskImagePath,dishPrice,popularity,description,title,restaurantId) {
+var dish = function(dishId,dishImagePath,dishPrice,popularity,description,title,restaurantId) {
 	this.dishId = dishId;
-	this.diskImagePath = diskImagePath;
+	this.dishImagePath = dishImagePath;
 	this.dishPrice = dishPrice;
 	this.popularity = popularity;
 	this.description = description;

@@ -35,7 +35,6 @@ router.post('/register', function (req, res, next) {
         }
 
     var restaurantNew = {
-        name: restaurantName,
         username: restaurantUsername,
         password: restaurantPassword,
         rating: null,
@@ -158,7 +157,7 @@ router.get('/search/:username', function (req, res) {
     Restaurant.select({username: username}, null, function (hasError, data) {
     });
     req.session.destroy();
-    res.json('session cleared');
+    res.status(GUGUContants.ok).json('session cleared');
 });
 
 function hashPassword(password) {

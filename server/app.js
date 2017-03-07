@@ -17,6 +17,7 @@ var GUGUContants = require('./utility/constant.js');
 // Route Files
 var routes = require('./routes/index');
 var restaurants = require('./routes/restaurant');
+var dishes = require('./routes/dish');
 
 //init app
 var app = express();
@@ -105,6 +106,7 @@ app.use(function(err, req, res, next) {
 app.use('/', routes);
 // app.use('/genres', genres);
 app.use('/restaurants', restaurants);
+app.use('/dishes', dishes);
 
 app.set('port', (process.env.PORT || 3002));
 

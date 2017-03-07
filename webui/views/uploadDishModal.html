@@ -34,7 +34,7 @@
 
                         <md-input-container flex="100">
                             <label>$ Price</label>
-                            <input name="Price" ng-model="dish.price" required type="number" min="1" max="999">
+                            <input name="price" ng-model="dish.price" required type="number" min="1" max="999">
                             <div ng-messages="dishForm.Price.$error" md-auto-hide="false" role="alert"  ng-if="dishForm.Price.$touched">
                                 <div ng-message="required" ng-if="dishForm.Price.$error.required">Price is required!</div>
                                 <div ng-message="max" ng-if="dishForm.Price.$error.max">Maximum price is $999</div>
@@ -43,7 +43,7 @@
 
 
 
-                        <div flex="100" class="dishDropZone">
+                        <div flex="100" class="dishDropZone" layout-padding>
                             <lf-ng-md-file-input name="files" lf-files="files" lf-required lf-maxcount="5" lf-filesize="10MB" lf-totalsize="20MB" lf-mimetype="image/*" drag preview></lf-ng-md-file-input>
                             <div ng-messages="dishForm.files.$error" role="alert"  ng-if="dishForm.files.$touched">
                                 <div ng-message="required">This is required.</div>
@@ -62,8 +62,6 @@
                     </div>
                 </md-dialog-content>
             </form>
-        <pre>{{dish|json}}</pre>
-        <pre>{{files|json}}</pre>
     </md-dialog>
 
 </div>
