@@ -98,6 +98,30 @@
         </md-button>
     </div>
 </md-toolbar>
+
+
+
+    <md-content layout-padding class="dishCanvas">
+        <md-grid-list
+                md-cols="1" md-cols-sm="2" md-cols-md="3" md-cols-gt-md="6"
+                md-row-height-gt-md="1:1" md-row-height="4:3"
+                md-gutter="20px" md-gutter-gt-sm="8px" >
+
+            <md-grid-tile ng-repeat="dish in dishes| filter:searchInput"
+                          md-rowspan="1"
+                          md-colspan="1"
+                          md-colspan-sm="1"
+                          md-colspan-xs="1">
+                <md-grid-tile-header>
+                    <h3>{{dish.title}}</h3>
+                </md-grid-tile-header>
+                    <img ng-src="{{dish.dishImagePath}}" class="md-card-image dishImage" alt="image caption">
+                <md-grid-tile-footer><h3>${{dish.dishPrice}}</h3></md-grid-tile-footer>
+            </md-grid-tile>
+        </md-grid-list>
+    </md-content>
+
+
 <script type="text/ng-template" id="/bottom-list-sheet.html">
     <md-bottom-sheet class="md-list">
         <md-list>

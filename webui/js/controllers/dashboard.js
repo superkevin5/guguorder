@@ -8,7 +8,7 @@
  * Controller of guguorderapp
  */
 angular.module('guguorderapp')
-    .controller('DashboardCtrl', function ($scope, $mdSidenav, $mdBottomSheet, $stateParams, $state, $mdDialog, LoginService, DishService, blockUI) {
+    .controller('DashboardCtrl', function ($scope, $mdSidenav, $mdBottomSheet, $stateParams, $state, $mdDialog, LoginService, DishService, blockUI, guguConstant) {
         var restaurantId = $stateParams.restaurantId;
 
         $scope.restaurantId = restaurantId;
@@ -21,6 +21,9 @@ angular.module('guguorderapp')
                 clickOutsideToClose: true,
                 scope: $scope,
                 preserveScope: true,
+                onRemoving: function (event, removePromise) {
+                    $scope.loadAllDishes();
+                },
                 locals: {
                     restaurantId: $scope.restaurantId
                 },
@@ -48,10 +51,30 @@ angular.module('guguorderapp')
 
         $scope.loadAllDishes = function () {
             DishService.loadDishes({restaurantId: $scope.restaurantId}).$promise.then(function (dishes) {
-                $scope.dishes = dishes;
+                $scope.dishes = $scope.buildGridModel(dishes);
                 console.log(dishes);
             });
         };
+        // this.tiles = buildGridModel({
+        //     icon : "avatar:svg-",
+        //     title: "Svg-",
+        //     background: ""
+        // });
+
+        $scope.buildGridModel  = function(tileTmpl){
+            var it, results = [ ];
+
+            for (var j=0; j<tileTmpl.length; j++) {
+                it = angular.extend({},tileTmpl[j]);
+                it.dishImagePath = angular.copy('http://localhost:9001' + it.dishImagePath);
+                console.log(it.dishImagePath);
+                it.span  = { row : 1, col : 1 };
+
+                results.push(it);
+            }
+            return results;
+        };
+
         $scope.loadAllDishes();
     });
 

@@ -80,3 +80,10 @@ body {
 
 .dishDropZone {
   height: 400px !important; }
+
+.dishCanvas {
+  background-color: transparent; }
+
+.dishImage {
+  height: 100%;
+  width: 100%; }

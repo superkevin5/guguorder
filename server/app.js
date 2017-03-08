@@ -60,6 +60,7 @@ app.use(function(req, res, next) {
 //flash
 app.use(flash());
 
+app.use('/dish', express.static('dish'));
 
 // Validator
 app.use(expressValidator({
