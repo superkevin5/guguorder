@@ -10,15 +10,35 @@
  */
 angular
   .module('guguorderapp', [
-    'ui.router',
-    'ngAnimate',
-    'ui.bootstrap',
-    'ngResource',
-    'toaster'
+      'ui.router',
+      'ngAnimate',
+      'ngResource',
+      'toaster',
+      'ngMaterial',
+      'lfNgMdFileInput',
+      'blockUI'
   ])
   .config(['$qProvider', function ($qProvider) {
         $qProvider.errorOnUnhandledRejections(false);
    }])
+  .config(function($mdThemingProvider,guguConstant) {
+      $mdThemingProvider
+          .definePalette('customPrimary',
+              guguConstant.CUSTOMPRIMARY);
+      $mdThemingProvider
+          .definePalette('customAccent',
+              guguConstant.CUSTOMACCENT);
+      $mdThemingProvider
+          .definePalette('customWarn',
+              guguConstant.CUSTOMWARN);
+      $mdThemingProvider
+          .definePalette('customBackground',
+              guguConstant.CUSTOMBACKGROUND);
+      $mdThemingProvider.theme('default');
+          // .primaryPalette('customPrimary')
+          // .accentPalette('customAccent')
+          // .warnPalette('customWarn');
+    })
   .config(['$httpProvider', function ($httpProvider) {
         // $httpProvider.defaults.headers.put['Content-Type'] = 'application/x-www-form-urlencoded';
         // // $httpProvider.defaults.headers.post['Content-Type'] =  'application/x-www-form-urlencoded';
@@ -37,9 +57,11 @@ angular
           controller: 'LoginCtrl'
         })
         .state('dashboard', {
-            url: '/dashboard',
+            url: '/dashboard/:restaurantId',
             templateUrl: 'views/dashboard.html',
-            controller: 'DashboardCtrl'
+            controller: 'DashboardCtrl',
+            controllerAs: 'vm',
+            css: 'css/agency.css'
         })
           .state('overview', {
             url: '/overview',
