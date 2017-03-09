@@ -1,0 +1,67 @@
+<div class="md-dialog-container">
+    <md-dialog aria-label="Account" flex="40">
+
+            <form name="accountForm">
+
+                <md-toolbar>
+                    <div class="md-toolbar-tools">
+                        <h2>Update your account</h2>
+                        <span flex></span>
+                        <md-button class="md-icon-button" ng-click="cancel()">
+                            <md-icon aria-label="Close dialog">&#xE5CD;</md-icon>
+                        </md-button>
+                    </div>
+                </md-toolbar>
+                <md-dialog-content layout-padding>
+
+
+                    <div layout="column" style="overflow:hidden" flex layout-wrap>
+                        <md-input-container flex="100">
+                            <label>Restaurant name</label>
+                            <input name="title" ng-model="account.name" required>
+                            <div ng-messages="accountForm.name.$error" md-auto-hide="false" role="alert"  ng-if="accountForm.name.$touched">
+                                    <div ng-message="required" ng-if="accountForm.name.$error.required">Name is required!</div>
+                            </div>
+                        </md-input-container>
+                        <md-input-container flex="100">
+                            <label>Description</label>
+                            <textarea name="description" ng-model="dish.description" required ng-maxlength="100" md-maxlength="100"></textarea>
+                            <div ng-messages="dishForm.description.$error" md-auto-hide="false" role="alert"  ng-if="dishForm.description.$touched">
+                                <div ng-message="required" ng-if="dishForm.description.$error.required">description is required!</div>
+                                <div ng-message="maxlength" ng-if="dishForm.description.$error.maxlength">That's too long!</div>
+                            </div>
+                        </md-input-container>
+
+                        <md-input-container flex="100">
+                            <label>$ Price</label>
+                            <input name="price" ng-model="dish.price" required type="number" min="1" max="999">
+                            <div ng-messages="dishForm.Price.$error" md-auto-hide="false" role="alert"  ng-if="dishForm.Price.$touched">
+                                <div ng-message="required" ng-if="dishForm.Price.$error.required">Price is required!</div>
+                                <div ng-message="max" ng-if="dishForm.Price.$error.max">Maximum price is $999</div>
+                            </div>
+                        </md-input-container>
+
+
+
+                        <div flex="100" class="dishDropZone" layout-padding>
+                            <lf-ng-md-file-input name="files" lf-files="files" lf-required lf-maxcount="5" lf-filesize="10MB" lf-totalsize="20MB" lf-mimetype="image/*" drag preview></lf-ng-md-file-input>
+                            <div ng-messages="dishForm.files.$error" role="alert"  ng-if="dishForm.files.$touched">
+                                <div ng-message="required">This is required.</div>
+                                <div ng-message="maxcount">Too many files.</div>
+                                <div ng-message="filesize">File size too large.</div>
+                                <div ng-message="totalsize">Total size too large.</div>
+                                <div ng-message="mimetype">Mimetype error.</div>
+                            </div>
+                        </div>
+
+                        <div layout="row" layout-align="end center">
+                            <md-button  class="md-raised" ng-click="cancel($event)" flex="10">Cancel</md-button>
+                            <md-button class="md-primary md-raised" ng-click="saveDish($event)" flex="10">Save</md-button>
+                        </div>
+
+                    </div>
+                </md-dialog-content>
+            </form>
+    </md-dialog>
+
+</div>

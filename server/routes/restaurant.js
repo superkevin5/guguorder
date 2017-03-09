@@ -160,6 +160,22 @@ router.get('/search/:username', function (req, res) {
     res.status(GUGUContants.ok).json('session cleared');
 });
 
+
+router.get('/get/:restaurantId', function(req, res){
+
+    var restaurantId = req.params.restaurantId;
+
+    Restaurant.select({id: restaurantId}, null, function (hasError, data) {
+        if (hasError) {
+            res.status(GUGUContants.InternalServerError).json(data);
+            return;
+        }
+        res.status(GUGUContants.ok).json(data);
+    });
+});
+
+
+
 function hashPassword(password) {
     var salt = bcrypt.hashSync("bacon");
     var hashedPassword = bcrypt.hashSync( password, salt );
