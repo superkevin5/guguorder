@@ -32,6 +32,23 @@ angular.module('guguorderapp')
             });
         };
 
+        $scope.updateAccount = function ($event) {
+            $mdDialog.show({
+                targetEvent: $event,
+                clickOutsideToClose: true,
+                scope: $scope,
+                preserveScope: true,
+                onRemoving: function (event, removePromise) {
+                    $scope.loadAllDishes();
+                },
+                locals: {
+                    restaurantId: $scope.restaurantId
+                },
+                templateUrl: '../views/accountModal.html',
+                controller: 'AccountDialogController'
+            });
+        };
+
 
         $scope.logout = function () {
             blockUI.start();
@@ -55,17 +72,12 @@ angular.module('guguorderapp')
                 console.log(dishes);
             });
         };
-        // this.tiles = buildGridModel({
-        //     icon : "avatar:svg-",
-        //     title: "Svg-",
-        //     background: ""
-        // });
-
+      
         $scope.buildGridModel  = function(tileTmpl){
-            var it, results = [ ];
+            var results = [ ];
 
             for (var j=0; j<tileTmpl.length; j++) {
-                it = angular.extend({},tileTmpl[j]);
+                var it = angular.copy(tileTmpl[j]);
                 it.dishImagePath = angular.copy('http://localhost:9001' + it.dishImagePath);
                 console.log(it.dishImagePath);
                 it.span  = { row : 1, col : 1 };
@@ -78,6 +90,29 @@ angular.module('guguorderapp')
         $scope.loadAllDishes();
     });
 
+
+angular
+    .module('guguorderapp')
+    .controller('AccountDialogController', function ($scope, $http, $mdDialog, RestaurantService, restaurantId, blockUI, toaster) {
+
+        $scope.restaurantId = restaurantId;
+
+        $scope.account = {};
+        console.log('ss');
+        RestaurantService.loadRestaurant({restaurantId: $scope.restaurantId}).$promise.then(function(data){
+            $scope.account = data[0];
+            
+        });
+
+
+        $scope.cancel = function () {
+            $mdDialog.hide();
+        };
+
+
+
+
+});
 
 angular
     .module('guguorderapp')
