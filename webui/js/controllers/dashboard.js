@@ -98,10 +98,10 @@ angular
         $scope.restaurantId = restaurantId;
 
         $scope.account = {};
-        console.log('ss');
+
         RestaurantService.loadRestaurant({restaurantId: $scope.restaurantId}).$promise.then(function(data){
             $scope.account = data[0];
-            
+            console.log(data[0]);
         });
 
 
