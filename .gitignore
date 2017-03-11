@@ -6,3 +6,4 @@ dist
 .sass-cache
 access.log*
 bower_components
+*.css
