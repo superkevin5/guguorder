@@ -7,3 +7,4 @@ dist
 access.log*
 bower_components
 *.css
+server/dish/*
