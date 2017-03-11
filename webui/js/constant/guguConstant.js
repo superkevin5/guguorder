@@ -66,5 +66,6 @@ angular.module('guguorderapp').constant('guguConstant', {
         'A200': '#8c8c8c',
         'A400': '#999999',
         'A700': '#000000'
-    }
+    },
+    state_list: ['ACT', 'NT', 'SA', 'WA', 'NSW', 'QLD', 'VIC', 'TAS']
 });

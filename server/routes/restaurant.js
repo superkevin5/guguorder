@@ -7,8 +7,11 @@ var bodyParser = require('body-parser');
 var bcrypt = require('bcryptjs');
 var localStrategy = require('passport-local').Strategy;
 var passport = require('passport');
+var Q = require('q');
 var logger = log4js.getLogger('gugulogger');
 var Restaurant = require('../model/restaurant.js');
+var Address = require('../model/address.js');
+var AddressRestaurantMap = require('../model/addressRestaurantMap.js');
 
 router.post('/register', function (req, res, next) {
 
@@ -165,13 +168,28 @@ router.get('/get/:restaurantId', function(req, res){
 
     var restaurantId = req.params.restaurantId;
 
-    Restaurant.select({id: restaurantId}, null, function (hasError, data) {
-        if (hasError) {
-            res.status(GUGUContants.InternalServerError).json(data);
-            return;
-        }
-        res.status(GUGUContants.ok).json(data);
+    var defer = Q.defer();
+
+    var restaurantRes = {};
+
+    process.nextTick(function(){
+
+
+        getRestaurantInfo(restaurantId).then(function(restaurant){
+            restaurantRes.restaurant = restaurant;
+            return getAddressInfo(restaurantId);
+        },function(error){
+            res.status(GUGUContants.InternalServerError).json(error);
+        }).then(function(address){
+            restaurantRes.address = address;
+            res.status(GUGUContants.ok).json(restaurantRes);
+        },function(error){
+            res.status(GUGUContants.InternalServerError).json(error);
+        });
+
+
     });
+
 });
 
 
@@ -180,6 +198,39 @@ function hashPassword(password) {
     var salt = bcrypt.hashSync("bacon");
     var hashedPassword = bcrypt.hashSync( password, salt );
     return hashedPassword;
+};
+
+
+function getRestaurantInfo(restaurantId) {
+    var defer = Q.defer();
+    Restaurant.select({id: restaurantId}, null, function (hasError, data) {
+        if (hasError) {
+            defer.reject(data);
+        }
+        defer.resolve(data[0]);
+    });
+    return defer.promise;
+};
+
+function getAddressInfo(restaurantId) {
+
+    var defer = Q.defer();
+    AddressRestaurantMap.select({restaurantID: restaurantId}, null, function (hasError, data) {
+        console.log(data);
+        var addressID = data[0].addressID;
+        Address.select({id: addressID}, null, function (hasError, data) {
+            if (hasError) {
+                defer.reject(data);
+            }
+            defer.resolve(data);
+        });
+    });
+    return defer.promise;
+};
+
+function getPostcodeGeo(id){
+
+
 };
 
 module.exports = router;

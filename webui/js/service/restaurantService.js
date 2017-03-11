@@ -7,7 +7,7 @@ angular.module('guguorderapp').factory('RestaurantService', ['$resource','guguCo
             url: guguConstant.APIROOTPATH + 'restaurants/get/:restaurantId',
             withCredentials: true,
             method: 'GET',
-            isArray: true
+            isArray: false
         }
     });
 }]);

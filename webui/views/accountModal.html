@@ -61,10 +61,10 @@
 
                         <md-input-container>
                             <label>State</label>
-                            <md-select ng-model="account.suburb">
+                            <md-select ng-model="account.state" required>
                                 <md-option><em>None</em></md-option>
-                                <md-option ng-repeat="suburb in ctrl.states" ng-value="state.abbrev" ng-disabled="$index === 1">
-                                    {{suburb.abbrev}}
+                                <md-option ng-repeat="state in stateList" ng-value="state" ng-disabled="$index === 1">
+                                    {{state}}
                                 </md-option>
                             </md-select>
                         </md-input-container>

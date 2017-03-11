@@ -72,15 +72,15 @@ angular.module('guguorderapp')
                 console.log(dishes);
             });
         };
-      
-        $scope.buildGridModel  = function(tileTmpl){
-            var results = [ ];
 
-            for (var j=0; j<tileTmpl.length; j++) {
+        $scope.buildGridModel = function (tileTmpl) {
+            var results = [];
+
+            for (var j = 0; j < tileTmpl.length; j++) {
                 var it = angular.copy(tileTmpl[j]);
                 it.dishImagePath = angular.copy('http://localhost:9001' + it.dishImagePath);
                 console.log(it.dishImagePath);
-                it.span  = { row : 1, col : 1 };
+                it.span = {row: 1, col: 1};
 
                 results.push(it);
             }
@@ -93,13 +93,17 @@ angular.module('guguorderapp')
 
 angular
     .module('guguorderapp')
-    .controller('AccountDialogController', function ($scope, $http, $mdDialog, RestaurantService, restaurantId, blockUI, toaster) {
+    .controller('AccountDialogController', function ($scope, $http, $mdDialog, guguConstant, RestaurantService, restaurantId, blockUI, toaster) {
 
         $scope.restaurantId = restaurantId;
 
         $scope.account = {};
 
-        RestaurantService.loadRestaurant({restaurantId: $scope.restaurantId}).$promise.then(function(data){
+        $scope.stateList = guguConstant.state_list;
+
+
+        RestaurantService.loadRestaurant({restaurantId: $scope.restaurantId}).$promise.then(function (data) {
+            console.log(data);
             $scope.account = data[0];
             console.log(data[0]);
         });
@@ -110,9 +114,7 @@ angular
         };
 
 
-
-
-});
+    });
 
 angular
     .module('guguorderapp')
