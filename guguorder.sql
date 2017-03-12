@@ -16879,11 +16879,11 @@ INSERT INTO `restaurant` VALUES ('5', 'eastern', 'eastern', '$2a$10$g8QPjIIQiiwM
 -- ----------------------------
 DROP TABLE IF EXISTS `restaurantandaddressmap`;
 CREATE TABLE `restaurantandaddressmap` (
-  `restaurtantID` int(11) NOT NULL,
+  `restaurantID` int(11) NOT NULL,
   `addressID` int(11) NOT NULL,
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`),
-  KEY `restaurant_fk_key` (`restaurtantID`)
+  KEY `restaurant_fk_key` (`restaurantID`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
