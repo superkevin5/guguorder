@@ -1,84 +1,137 @@
 <div class="md-dialog-container">
     <md-dialog aria-label="Account" flex="40">
 
-            <form name="accountForm">
+        <form name="accountForm">
 
-                <md-toolbar>
-                    <div class="md-toolbar-tools">
-                        <h2>Update your account</h2>
-                        <span flex></span>
-                        <md-button class="md-icon-button" ng-click="cancel()">
-                            <md-icon aria-label="Close dialog">&#xE5CD;</md-icon>
-                        </md-button>
-                    </div>
-                </md-toolbar>
-                <md-dialog-content layout-padding>
-
-
-                    <div layout="column" style="overflow:hidden" flex layout-wrap>
-                        <md-input-container flex="100">
-                            <label>Restaurant name</label>
-                            <input name="name" ng-model="account.name" required>
-                            <div ng-messages="accountForm.name.$error" md-auto-hide="false" role="alert"  ng-if="accountForm.name.$touched">
-                                    <div ng-message="required" ng-if="accountForm.name.$error.required">Name is required!</div>
-                            </div>
-                        </md-input-container>
+            <md-toolbar>
+                <div class="md-toolbar-tools">
+                    <h2>Update your account</h2>
+                    <span flex></span>
+                    <md-button class="md-icon-button" ng-click="cancel()">
+                        <md-icon aria-label="Close dialog">&#xE5CD;</md-icon>
+                    </md-button>
+                </div>
+            </md-toolbar>
+            <md-dialog-content layout-padding>
 
 
-                        <md-input-container flex="100">
-                            <label>Password</label>
-                            <input type="password" name="password" ng-model="account.password">
-                            <div ng-messages="accountForm.password.$error" md-auto-hide="false" role="alert"  ng-if="accountForm.password.$touched">
-                                <div ng-message="required" ng-if="accountForm.password.$error.required">Password is required!</div>
-                            </div>
-                        </md-input-container>
-
-                        <md-input-container flex="100">
-                            <label>Description</label>
-                            <textarea name="description" ng-model="account.description" required ng-maxlength="100" md-maxlength="100"></textarea>
-                            <div ng-messages="accountForm.description.$error" md-auto-hide="false" role="alert"  ng-if="accountForm.description.$touched">
-                                <div ng-message="required" ng-if="accountForm.description.$error.required">description is required!</div>
-                                <div ng-message="maxlength" ng-if="accountForm.description.$error.maxlength">That's too long!</div>
-                            </div>
-                        </md-input-container>
-
-                        <md-input-container flex="100">
-                            <label>Phone Number</label>
-                            <textarea name="phoneNumber" ng-model="account.phoneNumber" required></textarea>
-                            <div ng-messages="accountForm.phoneNumber.$error" md-auto-hide="false" role="alert"  ng-if="accountForm.phoneNumber.$touched">
-                                <div ng-message="required" ng-if="accountForm.phoneNumber.$error.required">PhoneNumber is required!</div>
-                            </div>
-                        </md-input-container>
-
-                        <md-input-container flex="100">
-                            <label>Wechat Id</label>
-                            <textarea name="wechatId" ng-model="account.wechatId" required></textarea>
-                            <div ng-messages="accountForm.wechatId.$error" md-auto-hide="false" role="alert"  ng-if="accountForm.wechatId.$touched">
-                                <div ng-message="required" ng-if="accountForm.wechatId.$error.required">PhoneNumber is required!</div>
-                            </div>
-                        </md-input-container>
-
-
-                        <md-input-container>
-                            <label>State</label>
-                            <md-select ng-model="account.state" required>
-                                <md-option><em>None</em></md-option>
-                                <md-option ng-repeat="state in stateList" ng-value="state" ng-disabled="$index === 1">
-                                    {{state}}
-                                </md-option>
-                            </md-select>
-                        </md-input-container>
-
-
-
-                        <div layout="row" layout-align="end center">
-                            <md-button  class="md-raised" ng-click="cancel($event)" flex="10">Cancel</md-button>
-                            <md-button class="md-primary md-raised" ng-click="saveDish($event)" flex="10">Save</md-button>
+                <div layout="row" style="overflow:hidden" flex layout-wrap>
+                    <md-input-container flex="100">
+                        <label>Restaurant name</label>
+                        <input name="name" ng-model="account.restaurant.name" required>
+                        <div ng-messages="accountForm.name.$error" md-auto-hide="false" role="alert"
+                             ng-if="accountForm.name.$touched">
+                            <div ng-message="required" ng-if="accountForm.name.$error.required">Name is required!</div>
                         </div>
+                    </md-input-container>
 
-                    </div>
-                </md-dialog-content>
-            </form>
+                    <md-input-container flex="100">
+                        <label>Description</label>
+                        <textarea name="description" ng-model="account.restaurant.description" required
+                                  ng-maxlength="100" md-maxlength="100"></textarea>
+                        <div ng-messages="accountForm.description.$error" md-auto-hide="false" role="alert"
+                             ng-if="accountForm.description.$touched">
+                            <div ng-message="required" ng-if="accountForm.description.$error.required">description is
+                                required!
+                            </div>
+                            <div ng-message="maxlength" ng-if="accountForm.description.$error.maxlength">That's too
+                                long!
+                            </div>
+                        </div>
+                    </md-input-container>
+
+                    <md-input-container flex="50">
+                        <label>Phone Number</label>
+                        <textarea name="phoneNumber" ng-model="account.restaurant.phoneNumber" required></textarea>
+                        <div ng-messages="accountForm.phoneNumber.$error" md-auto-hide="false" role="alert"
+                             ng-if="accountForm.phoneNumber.$touched">
+                            <div ng-message="required" ng-if="accountForm.phoneNumber.$error.required">PhoneNumber is
+                                required!
+                            </div>
+                        </div>
+                    </md-input-container>
+
+                    <md-input-container flex="50">
+                        <label>Wechat Id</label>
+                        <textarea name="wechatId" ng-model="account.restaurant.wechatId" required></textarea>
+                        <div ng-messages="accountForm.wechatId.$error" md-auto-hide="false" role="alert"
+                             ng-if="accountForm.wechatId.$touched">
+                            <div ng-message="required" ng-if="accountForm.wechatId.$error.required">wechat is
+                                required!
+                            </div>
+                        </div>
+                    </md-input-container>
+
+
+                    <md-input-container flex="33">
+                        <label>State</label>
+                        <md-select ng-model="account.postCode_geo.state" required>
+                            <md-option><em>None</em></md-option>
+                            <md-option ng-repeat="state in stateList" ng-value="state" ng-click="clearAddress()">
+                                {{state}}
+                            </md-option>
+                        </md-select>
+                    </md-input-container>
+
+
+                    <md-input-container flex="33">
+                        <label>Suburb</label>
+                        <textarea name="suburb" ng-model="account.postCode_geo.suburb" required></textarea>
+                        <div ng-messages="accountForm.suburb.$error" md-auto-hide="false" role="alert"
+                             ng-if="accountForm.suburb.$touched">
+                            <div ng-message="required" ng-if="accountForm.suburb.$error.required">Suburb is required!
+                            </div>
+                        </div>
+                    </md-input-container>
+
+                    <md-input-container flex="33">
+                        <label>Postcode</label>
+                        <textarea name="postcode" ng-model="account.postCode_geo.postcode" required></textarea>
+                        <div ng-messages="accountForm.postcode.$error" md-auto-hide="false" role="alert"
+                             ng-if="accountForm.postcode.$touched">
+                            <div ng-message="required" ng-if="accountForm.postcode.$error.required">Postcode is
+                                required!
+                            </div>
+                        </div>
+                    </md-input-container>
+
+                    <md-input-container flex="50">
+                        <label>unit number</label>
+                        <textarea name="unitnumber" ng-model="account.address.unitNumber"></textarea>
+                    </md-input-container>
+
+
+                    <md-input-container flex="50">
+                        <label>Street number</label>
+                        <textarea name="streetnumber" ng-model="account.address.streetNumber" required></textarea>
+                        <div ng-messages="accountForm.streetnumber.$error" md-auto-hide="false" role="alert"
+                             ng-if="accountForm.streetnumber.$touched">
+                            <div ng-message="required" ng-if="accountForm.streetnumber.$error.required">Streetnumber is
+                                required!
+                            </div>
+                        </div>
+                    </md-input-container>
+                    <md-input-container flex="100">
+                        <label>Street name</label>
+                        <textarea name="streetname" ng-model="account.address.street" required></textarea>
+                        <div ng-messages="accountForm.streetname.$error" md-auto-hide="false" role="alert"
+                             ng-if="accountForm.streetname.$touched">
+                            <div ng-message="required" ng-if="accountForm.streetname.$error.required">Streetname is
+                                required!
+                            </div>
+                        </div>
+                    </md-input-container>
+
+                </div>
+
+                <div layout="row" layout-align="end center">
+                    <md-button class="md-raised" ng-click="cancel($event)" flex="10">Cancel</md-button>
+                    <md-button class="md-primary md-raised" ng-click="updateRestaurant($event)" flex="10"
+                               ng-disabled="accountForm.$invalid">Save
+                    </md-button>
+                </div>
+            </md-dialog-content>
+        </form>
     </md-dialog>
 
 </div>

@@ -49,9 +49,10 @@
             <md-tooltip>My account</md-tooltip>
             <md-icon class="material-icons" ng-click="updateAccount()">&#xE853;</md-icon>
         </md-button>
-        <md-button class="md-icon-button" aria-label="Upload dish">
+
+        <md-button class="md-icon-button" aria-label="Upload dish" data-ng-click="upload()">
             <md-tooltip>Upload dish</md-tooltip>
-            <md-icon class="material-icons" ng-click="upload()">&#xE2C3;</md-icon>
+            <md-icon class="material-icons" >&#xE2C3;</md-icon>
         </md-button>
         <md-button class="md-icon-button" aria-label="Log out">
             <md-tooltip>Log out</md-tooltip>
@@ -98,8 +99,6 @@
         </md-button>
     </div>
 </md-toolbar>
-
-
 
     <md-content layout-padding class="dishCanvas">
         <md-grid-list

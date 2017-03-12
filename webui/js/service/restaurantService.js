@@ -8,6 +8,12 @@ angular.module('guguorderapp').factory('RestaurantService', ['$resource','guguCo
             withCredentials: true,
             method: 'GET',
             isArray: false
+        },
+        updateRestaurant: {
+            url: guguConstant.APIROOTPATH + 'restaurants/put/',
+            withCredentials: true,
+            method: 'PUT'
         }
+
     });
 }]);

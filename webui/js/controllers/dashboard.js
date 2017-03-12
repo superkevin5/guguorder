@@ -93,7 +93,7 @@ angular.module('guguorderapp')
 
 angular
     .module('guguorderapp')
-    .controller('AccountDialogController', function ($scope, $http, $mdDialog, guguConstant, RestaurantService, restaurantId, blockUI, toaster) {
+    .controller('AccountDialogController', function ($scope, $http, $mdDialog, guguConstant, RestaurantService, AddressService, restaurantId, blockUI, toaster) {
 
         $scope.restaurantId = restaurantId;
 
@@ -101,12 +101,20 @@ angular
 
         $scope.stateList = guguConstant.state_list;
 
-
         RestaurantService.loadRestaurant({restaurantId: $scope.restaurantId}).$promise.then(function (data) {
+            $scope.account = data;
             console.log(data);
-            $scope.account = data[0];
-            console.log(data[0]);
         });
+
+        $scope.getAllSuburbsByState = function (state) {
+            AddressService.getAllSuburbs({state: state}, {}).$promise.then(function(data){
+                $scope.availableSuburbList = data;
+                console.log(data);
+            });
+        };
+        $scope.updateRestaurant = function(){
+            RestaurantService.updateRestaurant({},$scope.account);
+        };
 
 
         $scope.cancel = function () {

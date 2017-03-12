@@ -12,6 +12,7 @@ var logger = log4js.getLogger('gugulogger');
 var Restaurant = require('../model/restaurant.js');
 var Address = require('../model/address.js');
 var AddressRestaurantMap = require('../model/addressRestaurantMap.js');
+var Postcode_geo = require('../model/postcode_geo.js');
 
 router.post('/register', function (req, res, next) {
 
@@ -164,6 +165,24 @@ router.get('/search/:username', function (req, res) {
 });
 
 
+router.put('/put', function(req, res){
+
+    var accountInfo = req.body;
+
+    var address = accountInfo.address;
+    var restaurant = accountInfo.restaurant;
+    var postcode_geo = accountInfo.postCode_geo;
+
+
+    process.nextTick(function(){
+
+
+
+    });
+
+});
+
+
 router.get('/get/:restaurantId', function(req, res){
 
     var restaurantId = req.params.restaurantId;
@@ -174,24 +193,26 @@ router.get('/get/:restaurantId', function(req, res){
 
     process.nextTick(function(){
 
-
         getRestaurantInfo(restaurantId).then(function(restaurant){
+            delete restaurant['password'];
             restaurantRes.restaurant = restaurant;
             return getAddressInfo(restaurantId);
         },function(error){
             res.status(GUGUContants.InternalServerError).json(error);
         }).then(function(address){
             restaurantRes.address = address;
+            return getPostcodeGeo(address.postcode_geo_fk);
+        },function(error){
+            res.status(GUGUContants.InternalServerError).json(error);
+        }).then(function(postcode_geo){
+            restaurantRes.postCode_geo = postcode_geo;
             res.status(GUGUContants.ok).json(restaurantRes);
         },function(error){
             res.status(GUGUContants.InternalServerError).json(error);
         });
-
-
     });
 
 });
-
 
 
 function hashPassword(password) {
@@ -216,21 +237,27 @@ function getAddressInfo(restaurantId) {
 
     var defer = Q.defer();
     AddressRestaurantMap.select({restaurantID: restaurantId}, null, function (hasError, data) {
-        console.log(data);
         var addressID = data[0].addressID;
         Address.select({id: addressID}, null, function (hasError, data) {
             if (hasError) {
                 defer.reject(data);
             }
-            defer.resolve(data);
+            defer.resolve(data[0]);
         });
     });
     return defer.promise;
 };
 
+
 function getPostcodeGeo(id){
-
-
+    var defer = Q.defer();
+    Postcode_geo.select({id: id}, null, function (hasError, data) {
+        if (hasError) {
+            defer.reject(data);
+        }
+        defer.resolve(data[0]);
+    });
+    return defer.promise;
 };
 
 module.exports = router;
