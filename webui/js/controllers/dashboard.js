@@ -32,6 +32,23 @@ angular.module('guguorderapp')
             });
         };
 
+        $scope.updateAccount = function ($event) {
+            $mdDialog.show({
+                targetEvent: $event,
+                clickOutsideToClose: true,
+                scope: $scope,
+                preserveScope: true,
+                onRemoving: function (event, removePromise) {
+                    $scope.loadAllDishes();
+                },
+                locals: {
+                    restaurantId: $scope.restaurantId
+                },
+                templateUrl: '../views/accountModal.html',
+                controller: 'AccountDialogController'
+            });
+        };
+
 
         $scope.logout = function () {
             blockUI.start();
@@ -55,20 +72,15 @@ angular.module('guguorderapp')
                 console.log(dishes);
             });
         };
-        // this.tiles = buildGridModel({
-        //     icon : "avatar:svg-",
-        //     title: "Svg-",
-        //     background: ""
-        // });
 
-        $scope.buildGridModel  = function(tileTmpl){
-            var it, results = [ ];
+        $scope.buildGridModel = function (tileTmpl) {
+            var results = [];
 
-            for (var j=0; j<tileTmpl.length; j++) {
-                it = angular.extend({},tileTmpl[j]);
+            for (var j = 0; j < tileTmpl.length; j++) {
+                var it = angular.copy(tileTmpl[j]);
                 it.dishImagePath = angular.copy('http://localhost:9001' + it.dishImagePath);
                 console.log(it.dishImagePath);
-                it.span  = { row : 1, col : 1 };
+                it.span = {row: 1, col: 1};
 
                 results.push(it);
             }
@@ -78,6 +90,45 @@ angular.module('guguorderapp')
         $scope.loadAllDishes();
     });
 
+
+angular
+    .module('guguorderapp')
+    .controller('AccountDialogController', function ($scope, $http, $mdDialog, guguConstant, RestaurantService, AddressService, restaurantId, blockUI, toaster) {
+
+        $scope.restaurantId = restaurantId;
+
+        $scope.account = {};
+
+        $scope.stateList = guguConstant.state_list;
+
+        RestaurantService.loadRestaurant({restaurantId: $scope.restaurantId}).$promise.then(function (data) {
+            $scope.account = data;
+            console.log(data);
+        });
+
+        $scope.getAllSuburbsByState = function (state) {
+            AddressService.getAllSuburbs({state: state}, {}).$promise.then(function (data) {
+                $scope.availableSuburbList = data;
+                console.log(data);
+            });
+        };
+        $scope.updateRestaurant = function () {
+            RestaurantService.updateRestaurant({}, $scope.account).$promise.then(function (data) {
+                if (data.error) {
+                    toaster.pop('error', data.error);
+                    blockUI.stop();
+                } else {
+                    toaster.pop('success', data.message);
+                    $scope.cancel();
+                }
+            });
+        };
+
+        $scope.cancel = function () {
+            $mdDialog.hide();
+        };
+
+    });
 
 angular
     .module('guguorderapp')

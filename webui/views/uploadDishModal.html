@@ -56,7 +56,7 @@
 
                         <div layout="row" layout-align="end center">
                             <md-button  class="md-raised" ng-click="cancel($event)" flex="10">Cancel</md-button>
-                            <md-button class="md-primary md-raised" ng-click="saveDish($event)" flex="10">Save</md-button>
+                            <md-button class="md-primary md-raised" ng-click="saveDish($event)" flex="10" ng-disabled="dishForm.$invalid">Save</md-button>
                         </div>
 
                     </div>
