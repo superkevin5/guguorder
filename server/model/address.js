@@ -3,13 +3,12 @@
 var mysqlDB = require('../utility/db');
 
 
-var address = function (id, street, streetNumber, unitNumber, postcode_geo_fk, city_fk) {
+var address = function (id, street, streetNumber, unitNumber, postcode_geo_fk) {
     this.id = id;
     this.street = street;
     this.streetNumber = streetNumber;
     this.unitNumber = unitNumber;
     this.postcode_geo_fk = postcode_geo_fk;
-    this.city_fk = city_fk;
 };
 
 address.insert = function (obj, callback) {

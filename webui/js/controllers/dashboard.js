@@ -107,20 +107,26 @@ angular
         });
 
         $scope.getAllSuburbsByState = function (state) {
-            AddressService.getAllSuburbs({state: state}, {}).$promise.then(function(data){
+            AddressService.getAllSuburbs({state: state}, {}).$promise.then(function (data) {
                 $scope.availableSuburbList = data;
                 console.log(data);
             });
         };
-        $scope.updateRestaurant = function(){
-            RestaurantService.updateRestaurant({},$scope.account);
+        $scope.updateRestaurant = function () {
+            RestaurantService.updateRestaurant({}, $scope.account).$promise.then(function (data) {
+                if (data.error) {
+                    toaster.pop('error', data.error);
+                    blockUI.stop();
+                } else {
+                    toaster.pop('success', data.message);
+                    $scope.cancel();
+                }
+            });
         };
-
 
         $scope.cancel = function () {
             $mdDialog.hide();
         };
-
 
     });
 

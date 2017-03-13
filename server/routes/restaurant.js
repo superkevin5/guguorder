@@ -165,7 +165,7 @@ router.get('/search/:username', function (req, res) {
 });
 
 
-router.put('/put', function(req, res){
+router.put('/put', function (req, res) {
 
     var accountInfo = req.body;
 
@@ -173,11 +173,22 @@ router.put('/put', function(req, res){
     var restaurant = accountInfo.restaurant;
     var postcode_geo = accountInfo.postCode_geo;
 
-
-    process.nextTick(function(){
-
-
-
+    process.nextTick(function () {
+        isPostCode_geoValid(postcode_geo).then(function (data) {
+            if(!data){
+                res.status(GUGUContants.ok).json({error: 'State, suburb or postcode is not matched'});
+            } else {
+                updateAddressInfo(data,address).then(function(success){
+                    return updateRestaurantInfo(restaurant);
+                },function(error){
+                    res.status(GUGUContants.InternalServerError).json(error);
+                }).then(function(success){
+                    res.status(GUGUContants.ok).json({message:'Account updated'});
+                },function(error){
+                    res.status(GUGUContants.InternalServerError).json(error);
+                });
+            }
+        });
     });
 
 });
@@ -222,6 +233,52 @@ function hashPassword(password) {
 };
 
 
+function updateRestaurantInfo(restaurant_new) {
+    var defer = Q.defer();
+    var id = restaurant_new.id;
+    var name = restaurant_new.name;
+    var description = restaurant_new.description;
+    var phoneNumber = restaurant_new.phoneNumber;
+    var wechatId = restaurant_new.wechatId;
+
+    Restaurant.update({
+        name: name,
+        description: description,
+        phoneNumber: phoneNumber,
+        wechatId: wechatId
+    }, {id: id}, function (data) {
+        defer.resolve(data);
+    }), function (error) {
+        defer.reject(error);
+    };
+    return defer.promise;
+};
+
+
+function updateAddressInfo(postcode_geoData, address_new) {
+
+    var defer = Q.defer();
+    var postcode_geo = postcode_geoData[0];
+    var postcode_geo_fk_new = postcode_geo.id;
+    var addressId = address_new.id;
+    var street_new = address_new.street;
+    var street_streetNumber_new = address_new.streetNumber;
+    var street_unitNumber_new = address_new.unitNumber;
+    Address.update({
+        street: street_new,
+        streetNumber: street_streetNumber_new,
+        unitNumber: street_unitNumber_new,
+        postcode_geo_fk: postcode_geo_fk_new
+    }, {id: addressId}, function (data) {
+        defer.resolve(data);
+    }), function (error) {
+        defer.reject(error);
+    };
+    return defer.promise;
+};
+
+
+
 function getRestaurantInfo(restaurantId) {
     var defer = Q.defer();
     Restaurant.select({id: restaurantId}, null, function (hasError, data) {
@@ -248,6 +305,21 @@ function getAddressInfo(restaurantId) {
     return defer.promise;
 };
 
+
+function isPostCode_geoValid(postcode_geo){
+    var defer = Q.defer();
+    Postcode_geo.select({
+        postcode: postcode_geo.postcode,
+        suburb: postcode_geo.suburb,
+        state: postcode_geo.state
+    }, null, function (hasError, data) {
+        if (hasError) {
+            defer.reject(data);
+        }
+        defer.resolve(data);
+    });
+    return defer.promise;
+};
 
 function getPostcodeGeo(id){
     var defer = Q.defer();

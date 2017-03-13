@@ -24,17 +24,20 @@ exports.connect = function (req,res) {
     });
 };
 
-exports.updateRecord = function (model, obj, criteria, callback){
-    var sql = 'update ?? set ? where ';
-    var options = [model.name, obj], link = '';
-    for (var key in criteria) {
-        options.push(key);
-        options.push(criteria[key]);
-        sql += link + '?? = ?';
-        link = ' and ';
-    }
-    sql += ';';
-    pool.query(sql, options, callback);
+exports.updateRecord = function (table, obj, criteria, callback){
+    var sql = 'update ' + table + ' set ? where ? ';
+    pool.getConnection(function (err, connection) {
+        if (err) {
+            logger.error(err);
+            callback(true, err);
+            return;
+        }
+        connection.query(sql, [obj,criteria], function (err, results) {
+            if(err) { logger.error(err); callback(true,err); return; }
+            var str = 'Last updated ID:' + results.insertId;
+            callback(false, str);
+        });
+    });
 };
 
 exports.insertRecord = function (table, obj, callback) {
