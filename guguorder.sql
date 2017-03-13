@@ -25,32 +25,13 @@ CREATE TABLE `address` (
   `streetNumber` varchar(811) DEFAULT NULL,
   `unitNumber` varchar(551) DEFAULT NULL,
   `postcode_geo_fk` varchar(255) DEFAULT NULL,
-  `city_fk` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `city_fk_key` (`city_fk`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of address
 -- ----------------------------
-INSERT INTO `address` VALUES ('1', 'southdowling st', '811', '811', '747', '1');
-
--- ----------------------------
--- Table structure for city
--- ----------------------------
-DROP TABLE IF EXISTS `city`;
-CREATE TABLE `city` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) DEFAULT NULL,
-  `state_fk` int(255) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `state_fk_key` (`state_fk`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of city
--- ----------------------------
-INSERT INTO `city` VALUES ('1', 'sydney', '1');
+INSERT INTO `address` VALUES ('1', 'southdowling st', '811', '811', '747');
 
 -- ----------------------------
 -- Table structure for dish
