@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50714
 File Encoding         : 65001
 
-Date: 2017-03-11 12:27:38
+Date: 2017-03-18 00:14:49
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -31,7 +31,7 @@ CREATE TABLE `address` (
 -- ----------------------------
 -- Records of address
 -- ----------------------------
-INSERT INTO `address` VALUES ('1', 'southdowling st', '811', '811', '747');
+INSERT INTO `address` VALUES ('1', 'asdasd', '123123DDD', 'asdWEWE', '799');
 
 -- ----------------------------
 -- Table structure for dish
@@ -45,22 +45,64 @@ CREATE TABLE `dish` (
   `description` varchar(2000) DEFAULT NULL,
   `title` varchar(255) DEFAULT NULL,
   `restaurant_fk` int(11) DEFAULT NULL,
+  `dish_category_fk` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `restaurant_fk_key` (`restaurant_fk`)
-) ENGINE=MyISAM AUTO_INCREMENT=53 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=58 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of dish
 -- ----------------------------
-INSERT INTO `dish` VALUES ('44', '/dish/5/1488974286243-pork.jpg', '10.00', null, '糖醋排骨', '糖醋排骨', '5');
-INSERT INTO `dish` VALUES ('45', '/dish/5/1488974347021-sushi.jpg', '10.00', null, 'sushi', 'sushi', '5');
-INSERT INTO `dish` VALUES ('46', '/dish/5/1488974378890-fish.PNG', '10.00', null, 'gish', '鱼香肉丝', '5');
-INSERT INTO `dish` VALUES ('47', '/dish/5/1488974595579-toufu.jpg', '11.00', null, '麻婆豆腐', '麻婆豆腐', '5');
-INSERT INTO `dish` VALUES ('48', '/dish/5/1488974612656-porn3.jpg', '11.00', null, 'pork2', 'pork2', '5');
-INSERT INTO `dish` VALUES ('49', '/dish/5/1488974628366-pork2.jpg', '111.00', null, 'asd', 'pork3', '5');
-INSERT INTO `dish` VALUES ('50', '/dish/5/1488975349419-vege.jpg', '1.00', null, 'asdasd', 'asd', '5');
-INSERT INTO `dish` VALUES ('51', '/dish/5/1488978406739-porn3.jpg', '11.00', null, '好吃', '新疆大盘鸡', '5');
-INSERT INTO `dish` VALUES ('52', '/dish/5/1489062428816-porn3.jpg', '1.00', null, 'wer', 'sdf', '5');
+INSERT INTO `dish` VALUES ('44', '/dish/5/1488974286243-pork.jpg', '10.00', null, '糖醋排骨', '糖醋排骨', '5', '3');
+INSERT INTO `dish` VALUES ('45', '/dish/5/1488974347021-sushi.jpg', '10.00', null, 'sushi', 'sushi', '5', '3');
+INSERT INTO `dish` VALUES ('46', '/dish/5/1488974378890-fish.PNG', '10.00', null, 'gish', '鱼香肉丝', '5', '3');
+INSERT INTO `dish` VALUES ('47', '/dish/5/1488974595579-toufu.jpg', '11.00', null, '麻婆豆腐', '麻婆豆腐', '5', '3');
+INSERT INTO `dish` VALUES ('48', '/dish/5/1488974612656-porn3.jpg', '11.00', null, 'pork2', 'pork2', '5', '3');
+INSERT INTO `dish` VALUES ('49', '/dish/5/1488974628366-pork2.jpg', '111.00', null, 'asd', 'pork3', '5', '3');
+INSERT INTO `dish` VALUES ('50', '/dish/5/1488975349419-vege.jpg', '1.00', null, 'asdasd', 'asd', '5', '3');
+INSERT INTO `dish` VALUES ('51', '/dish/5/1488978406739-porn3.jpg', '11.00', null, '好吃', '新疆大盘鸡', '5', '3');
+INSERT INTO `dish` VALUES ('52', '/dish/5/1489062428816-porn3.jpg', '1.00', null, 'wer', 'sdf', '5', '3');
+INSERT INTO `dish` VALUES ('53', '/dish/5/1489204157906-capsicum.PNG', '1.00', null, '1', '青椒炒牛肉', '5', '3');
+INSERT INTO `dish` VALUES ('54', '/dish/5/1489204834403-capsicum.PNG', '1.00', null, 'asd', 'asd', '5', '3');
+INSERT INTO `dish` VALUES ('55', '/dish/5/1489409765853-capsicum.PNG', '111.00', null, 'asdasd', 'asdasd', '5', '3');
+INSERT INTO `dish` VALUES ('56', '/dish/5/1489409924697-capsicum.PNG', '111.00', null, 'asdasd', 'one more dish', '5', '3');
+INSERT INTO `dish` VALUES ('57', '/dish/5/1489482531648-capsicum.PNG', '11.00', null, 'DDD', 'SSSSS', '5', '3');
+
+-- ----------------------------
+-- Table structure for dish_category
+-- ----------------------------
+DROP TABLE IF EXISTS `dish_category`;
+CREATE TABLE `dish_category` (
+  `id` int(11) NOT NULL,
+  `category_title` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of dish_category
+-- ----------------------------
+INSERT INTO `dish_category` VALUES ('1', 'Entree');
+INSERT INTO `dish_category` VALUES ('2', 'Main');
+INSERT INTO `dish_category` VALUES ('3', 'Meal');
+INSERT INTO `dish_category` VALUES ('4', 'Lunch Special');
+INSERT INTO `dish_category` VALUES ('5', 'Soft Drink');
+INSERT INTO `dish_category` VALUES ('6', 'Alcohol');
+INSERT INTO `dish_category` VALUES ('7', 'Dessert');
+INSERT INTO `dish_category` VALUES ('8', 'Sides');
+
+-- ----------------------------
+-- Table structure for postcodes_geo
+-- ----------------------------
+DROP TABLE IF EXISTS `postcodes_geo`;
+CREATE TABLE `postcodes_geo` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `postcode` varchar(5) DEFAULT NULL,
+  `suburb` varchar(100) DEFAULT NULL,
+  `state` varchar(4) DEFAULT NULL,
+  `latitude` decimal(6,3) DEFAULT NULL,
+  `longitude` decimal(6,3) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=16795 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for postcodes_geo
@@ -16847,13 +16889,31 @@ CREATE TABLE `restaurant` (
 ) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Table structure for restaurant
+-- ----------------------------
+DROP TABLE IF EXISTS `restaurant`;
+CREATE TABLE `restaurant` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `username` varchar(255) DEFAULT NULL,
+  `password` varchar(255) DEFAULT NULL,
+  `rating` int(5) DEFAULT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `phoneNumber` bigint(20) DEFAULT NULL,
+  `wechatId` char(38) DEFAULT NULL,
+  `imagePath` varchar(255) DEFAULT NULL,
+  `restaurant_category_fk` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
 -- Records of restaurant
 -- ----------------------------
-INSERT INTO `restaurant` VALUES ('1', 'northern restaurant', 'northern', '123', '1', 'aaa', '450136058', '1111', null);
-INSERT INTO `restaurant` VALUES ('2', 'ddd', null, null, null, null, null, null, null);
-INSERT INTO `restaurant` VALUES ('3', 'ddd', null, null, null, null, null, null, null);
-INSERT INTO `restaurant` VALUES ('4', null, null, null, null, null, null, null, null);
-INSERT INTO `restaurant` VALUES ('5', 'eastern', 'eastern', '$2a$10$g8QPjIIQiiwMzm7BqtnX5eOJ68vHl7ZwXKYYqPCuI82V3FL45utL6', null, 'best restaurant', '123', null, null);
+INSERT INTO `restaurant` VALUES ('1', 'northern restaurant', 'northern', '123', '1', 'aaa', '450136058', '1111', null, '3');
+INSERT INTO `restaurant` VALUES ('2', 'ddd', null, null, null, null, null, null, null, '3');
+INSERT INTO `restaurant` VALUES ('3', 'ddd', null, null, null, null, null, null, null, '3');
+INSERT INTO `restaurant` VALUES ('4', null, null, null, null, null, null, null, null, '3');
+INSERT INTO `restaurant` VALUES ('5', 'kevin restaurant22', 'eastern', '$2a$10$g8QPjIIQiiwMzm7BqtnX5eOJ68vHl7ZwXKYYqPCuI82V3FL45utL6', null, '123123123222', '123123123', '123123222', null, '4');
 
 -- ----------------------------
 -- Table structure for restaurantandaddressmap
@@ -16873,6 +16933,44 @@ CREATE TABLE `restaurantandaddressmap` (
 INSERT INTO `restaurantandaddressmap` VALUES ('5', '1', '1');
 
 -- ----------------------------
+-- Table structure for restaurant_category
+-- ----------------------------
+DROP TABLE IF EXISTS `restaurant_category`;
+CREATE TABLE `restaurant_category` (
+  `id` int(11) NOT NULL,
+  `category_title` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of restaurant_category
+-- ----------------------------
+INSERT INTO `restaurant_category` VALUES ('1', 'American');
+INSERT INTO `restaurant_category` VALUES ('2', 'Chinese');
+INSERT INTO `restaurant_category` VALUES ('3', 'Indian');
+INSERT INTO `restaurant_category` VALUES ('4', 'Japanese');
+INSERT INTO `restaurant_category` VALUES ('5', 'Western');
+INSERT INTO `restaurant_category` VALUES ('6', 'Fastfood');
+INSERT INTO `restaurant_category` VALUES ('7', 'Snack');
+INSERT INTO `restaurant_category` VALUES ('8', 'Fruit vegetable');
+
+-- ----------------------------
+-- Table structure for service_suburb
+-- ----------------------------
+DROP TABLE IF EXISTS `service_suburb`;
+CREATE TABLE `service_suburb` (
+  `restaurant_fk` int(11) NOT NULL,
+  `postcode` varchar(255) NOT NULL,
+  PRIMARY KEY (`restaurant_fk`,`postcode`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of service_suburb
+-- ----------------------------
+INSERT INTO `service_suburb` VALUES ('5', '2016');
+INSERT INTO `service_suburb` VALUES ('5', '2017');
+
+-- ----------------------------
 -- Table structure for sessions
 -- ----------------------------
 DROP TABLE IF EXISTS `sessions`;
@@ -16882,9 +16980,3 @@ CREATE TABLE `sessions` (
   `data` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
   PRIMARY KEY (`session_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of sessions
--- ----------------------------
-INSERT INTO `sessions` VALUES ('8kn9mq4iji2OKEbXvwnfNL9DLENct39a', '1489234692', 0x7B22636F6F6B6965223A7B226F726967696E616C4D6178416765223A6E756C6C2C2265787069726573223A6E756C6C2C22687474704F6E6C79223A747275652C2270617468223A222F227D7D);
-INSERT INTO `sessions` VALUES ('SDGL4h8wZsUKa2xQ0jZOEht0jD3InqWg', '1489273814', 0x7B22636F6F6B6965223A7B226F726967696E616C4D6178416765223A6E756C6C2C2265787069726573223A6E756C6C2C22687474704F6E6C79223A747275652C2270617468223A222F227D2C2270617373706F7274223A7B2275736572223A357D7D);
