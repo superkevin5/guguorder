@@ -23,6 +23,19 @@
                                     <div ng-message="required" ng-if="dishForm.title.$error.required">Title is required!</div>
                             </div>
                         </md-input-container>
+
+
+                        <md-input-container flex="100">
+                            <label>Dish category</label>
+                            <md-select name="category" ng-model="dish.category" required>
+                                <md-option><em>None</em></md-option>
+                                <md-option ng-repeat="category in categories" ng-value="category.id">
+                                    {{category.category_title}}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+
+
                         <md-input-container flex="100">
                             <label>Description</label>
                             <textarea name="description" ng-model="dish.description" required ng-maxlength="100" md-maxlength="100"></textarea>

@@ -11,6 +11,7 @@ var Q = require('q');
 var logger = log4js.getLogger('gugulogger');
 var Restaurant = require('../model/restaurant.js');
 var Address = require('../model/address.js');
+var Restaurant_category = require('../model/restaurant_category.js');
 var AddressRestaurantMap = require('../model/addressRestaurantMap.js');
 var Postcode_geo = require('../model/postcode_geo.js');
 var mysqlDB = require('../utility/db');
@@ -165,15 +166,25 @@ router.get('/search/:username', function (req, res) {
     res.status(GUGUContants.ok).json('session cleared');
 });
 
+router.get('/getAllRestaurantCategory', function (req, res) {
+    Restaurant_category.select({}, null, function (hasError, data) {
+        if (hasError) {
+            res.status(GUGUContants.InternalServerError).json(data);
+        } else {
+            res.status(GUGUContants.ok).json(data);
+        }
+    });
+
+});
 
 router.put('/put', function (req, res, next) {
 
-    var accountInfo = req.body;
+    console.log('request comming......');
 
+    var accountInfo = req.body;
     var address = accountInfo.address;
     var restaurant = accountInfo.restaurant;
     var postcode_geo = accountInfo.postCode_geo;
-
     process.nextTick(function () {
         isPostCode_geoValid(postcode_geo).then(function (data) {
             if (!data) {
@@ -208,6 +219,7 @@ router.put('/put', function (req, res, next) {
     });
 
 });
+
 
 
 router.get('/get/:restaurantId', function (req, res, next) {
@@ -253,11 +265,14 @@ function updateRestaurantInfo(connection, restaurant_new) {
     var description = restaurant_new.description;
     var phoneNumber = restaurant_new.phoneNumber;
     var wechatId = restaurant_new.wechatId;
+    var restaurant_category_fk = restaurant_new.restaurant_category_fk;
+    console.log(restaurant_category_fk);
     Restaurant.update(connection, {
         name: name,
         description: description,
         phoneNumber: phoneNumber,
-        wechatId: wechatId
+        wechatId: wechatId,
+        restaurant_category_fk: restaurant_category_fk
     }, {id: id}, function (data) {
         defer.resolve(data);
     }), function (error) {

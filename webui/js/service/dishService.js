@@ -15,6 +15,12 @@ angular.module('guguorderapp').factory('DishService', ['$resource','guguConstant
             withCredentials: true,
             method: 'GET',
             isArray:true
+        },
+        getAllDishCategory: {
+            url: guguConstant.APIROOTPATH + 'dishes/getAllDishCategory',
+            withCredentials: true,
+            method: 'GET',
+            isArray:true
         }
     });
 }]);

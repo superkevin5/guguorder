@@ -5,11 +5,11 @@ var mysql = require('mysql');
 var log4js = require("log4js");
 var logger = log4js.getLogger('gugulogger');
 var GUGUContants = require('../utility/constant.js');
-var pool      =    mysql.createPool(GUGUContants.dbOptions);
+var pool = mysql.createPool(GUGUContants.dbOptions);
 var Q = require('q');
 
-exports.getConnection = function() {
-  return mysql.createConnection(GUGUContants.dbOptions);
+exports.getConnection = function () {
+    return mysql.createConnection(GUGUContants.dbOptions);
 };
 
 
@@ -30,16 +30,15 @@ exports.getConnectionFromPool = function () {
 };
 
 
+exports.connect = function (req, res) {
 
-exports.connect = function (req,res) {
-
-    pool.getConnection(function(err,connection){
+    pool.getConnection(function (err, connection) {
         if (err) {
             logger.error('unable to connect to mysql due to ' + err);
         }
         logger.debug('connected as id ' + connection.threadId);
         connection.release();
-        logger.debug('Connection ' +  connection.threadId + ' released');
+        logger.debug('Connection ' + connection.threadId + ' released');
     });
 };
 
@@ -69,9 +68,13 @@ exports.insertRecord = function (connection, table, obj, callback) {
     });
 };
 
-exports.selectRecord = function(table, criteria, range, callback) {
-    var sql = "SELECT * FROM ?? WHERE "  ;
+exports.selectRecord = function (table, criteria, range, callback) {
+    var sql = "SELECT * FROM ??";
     // get a connection from the pool
+
+    if (Object.keys(criteria).length !== 0) {
+        sql += ' WHERE ';
+    }
 
     var options = [table], link = '';
     for (var key in criteria) {
@@ -81,7 +84,7 @@ exports.selectRecord = function(table, criteria, range, callback) {
         link = ' and ';
     }
 
-    pool.getConnection(function(err, connection) {
+    pool.getConnection(function (err, connection) {
         if (err) {
             logger.error(err);
             callback(true, err);
@@ -89,15 +92,15 @@ exports.selectRecord = function(table, criteria, range, callback) {
             return;
         }
         // make the query
-        connection.query(sql, options, function(err, results) {
-            if(err) {
+        connection.query(sql, options, function (err, results) {
+            if (err) {
                 logger.error(err);
-                callback(true,err);
+                callback(true, err);
                 connection.release();
                 return;
             }
 
-            if(!results || Array.isArray(results) && results.length === 0) {
+            if (!results || Array.isArray(results) && results.length === 0) {
                 callback(false, null);
             } else {
                 callback(false, results);

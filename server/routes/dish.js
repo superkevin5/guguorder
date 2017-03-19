@@ -6,6 +6,7 @@ var log4js = require("log4js");
 var bodyParser = require('body-parser');
 var formidable = require('formidable');
 var Dishes = require('../model/dish.js');
+var DishCategory = require('../model/dish_category.js');
 var fs = require('fs');
 var mysqlDB = require('../utility/db');
 
@@ -14,6 +15,16 @@ router.get('/getAll/:restaurantId', function (req, res) {
     var restaurantId = req.params.restaurantId;
 
     Dishes.select({restaurant_fk: restaurantId}, null, function (hasError, data) {
+        if (hasError) {
+            res.status(GUGUContants.InternalServerError).json(data);
+            return;
+        }
+        res.status(GUGUContants.ok).json(data);
+    });
+});
+
+router.get('/getAllDishCategory', function (req, res) {
+    DishCategory.select({}, null, function (hasError, data) {
         if (hasError) {
             res.status(GUGUContants.InternalServerError).json(data);
             return;

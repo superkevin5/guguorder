@@ -3,6 +3,12 @@
  */
 angular.module('guguorderapp').factory('RestaurantService', ['$resource','guguConstant',function ($resource,guguConstant) {
     return $resource('/', {restaurantId: '@restaurantId'}, {
+        loadRestaurantCategory: {
+            url: guguConstant.APIROOTPATH + 'restaurants/getAllRestaurantCategory',
+            withCredentials: true,
+            method: 'GET',
+            isArray: true
+        },
         loadRestaurant: {
             url: guguConstant.APIROOTPATH + 'restaurants/get/:restaurantId',
             withCredentials: true,

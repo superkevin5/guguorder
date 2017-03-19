@@ -101,9 +101,13 @@ angular
 
         $scope.stateList = guguConstant.state_list;
 
-        RestaurantService.loadRestaurant({restaurantId: $scope.restaurantId}).$promise.then(function (data) {
-            $scope.account = data;
-            console.log(data);
+
+        RestaurantService.loadRestaurantCategory().$promise.then(function (data) {
+            $scope.restaurantCategories = data;
+            RestaurantService.loadRestaurant({restaurantId: $scope.restaurantId}).$promise.then(function (data) {
+                $scope.account = data;
+                console.log(data);
+            });
         });
 
         $scope.getAllSuburbsByState = function (state) {
@@ -143,6 +147,11 @@ angular
             console.log($scope.files);
         });
 
+        $scope.getAllDishCategory = function(){
+            DishService.getAllDishCategory().$promise.then(function(categories){
+                $scope.categories = categories;
+            });
+        };
         $scope.saveDish = function ($event) {
             blockUI.start('Uploading...');
             var formData = new FormData();
@@ -156,6 +165,7 @@ angular
             formData.append('description', $scope.dish.description);
             formData.append('dishPrice', $scope.dish.price);
             formData.append('restaurant_fk', restaurantId);
+            formData.append('dish_category_fk', $scope.dish.category);
 
             DishService.upload({}, formData).$promise.then(function () {
                 toaster.pop('success', 'Dish uploaded');
@@ -166,4 +176,5 @@ angular
                 blockUI.stop();
             });
         };
+        $scope.getAllDishCategory();
     });

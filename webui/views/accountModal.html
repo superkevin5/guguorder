@@ -13,16 +13,24 @@
                 </div>
             </md-toolbar>
             <md-dialog-content layout-padding>
-
-
                 <div layout="row" style="overflow:hidden" flex layout-wrap>
-                    <md-input-container flex="100">
+                    <md-input-container flex="60">
                         <label>Restaurant name</label>
                         <input name="name" ng-model="account.restaurant.name" required>
                         <div ng-messages="accountForm.name.$error" md-auto-hide="false" role="alert"
                              ng-if="accountForm.name.$touched">
                             <div ng-message="required" ng-if="accountForm.name.$error.required">Name is required!</div>
                         </div>
+                    </md-input-container>
+
+                    <md-input-container flex="40">
+                        <label>Restaurant category</label>
+                        <md-select name="restaurantcategory" ng-model="account.restaurant.restaurant_category_fk" required>
+                            <md-option><em>None</em></md-option>
+                            <md-option ng-repeat="category in restaurantCategories" ng-value="category.id">
+                                {{category.category_title}}
+                            </md-option>
+                        </md-select>
                     </md-input-container>
 
                     <md-input-container flex="100">
