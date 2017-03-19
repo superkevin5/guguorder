@@ -12,14 +12,14 @@ var postcode_geo = function (id, postcode, suburb, state, latitude, longtitude) 
     this.longtitude = longtitude;
 };
 
-postcode_geo.insert = function (obj, callback) {
-    mysqlDB.insertRecord('postcodes_geo', obj, callback);
+postcode_geo.insert = function (connection, obj, callback) {
+    mysqlDB.insertRecord(connection, 'postcodes_geo', obj, callback);
 };
-postcode_geo.remove = function (criteria, callback) {
-    mysqlDB.removeRecord('postcodes_geo', criteria, callback);
+postcode_geo.remove = function (connection, criteria, callback) {
+    mysqlDB.removeRecord(connection, 'postcodes_geo', criteria, callback);
 };
-postcode_geo.update = function (obj, criteria, callback) {
-    mysqlDB.updateRecord('postcodes_geo', obj, criteria, callback);
+postcode_geo.update = function (connection, obj, criteria, callback) {
+    mysqlDB.updateRecord(connection, 'postcodes_geo', obj, criteria, callback);
 };
 
 postcode_geo.select = function (criteria, range, callback) {

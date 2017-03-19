@@ -14,14 +14,14 @@ var restaurant = function(id,name,username,password,rating,description,phoneNumb
 	this.imagePath = imagePath;
 };
 
-restaurant.insert = function (obj, callback) {
-	mysqlDB.insertRecord('restaurant', obj, callback);
+restaurant.insert = function (connection, obj, callback) {
+	mysqlDB.insertRecord(connection,'restaurant', obj, callback);
 };
-restaurant.remove = function (criteria, callback) {
-	mysqlDB.removeRecord('restaurant', criteria, callback);
+restaurant.remove = function (connection,criteria, callback) {
+	mysqlDB.removeRecord(connection,'restaurant', criteria, callback);
 };
-restaurant.update = function (obj, criteria, callback) {
-	mysqlDB.updateRecord('restaurant', obj, criteria, callback);
+restaurant.update = function (connection,obj, criteria, callback) {
+	mysqlDB.updateRecord(connection,'restaurant', obj, criteria, callback);
 };
 
 restaurant.select = function (criteria, range, callback) {

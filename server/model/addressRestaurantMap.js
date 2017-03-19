@@ -3,20 +3,20 @@
 var mysqlDB = require('../utility/db');
 
 
-var addressRestaurantMap = function (restaurantId, addressId,id) {
+var addressRestaurantMap = function (restaurantId, addressId, id) {
     this.id = id;
     this.restaurantId = restaurantId;
     this.addressId = addressId;
 };
 
-addressRestaurantMap.insert = function (obj, callback) {
-    mysqlDB.insertRecord('restaurantandaddressmap', obj, callback);
+addressRestaurantMap.insert = function (connection, obj, callback) {
+    mysqlDB.insertRecord(connection, 'restaurantandaddressmap', obj, callback);
 };
-addressRestaurantMap.remove = function (criteria, callback) {
-    mysqlDB.removeRecord('restaurantandaddressmap', criteria, callback);
+addressRestaurantMap.remove = function (connection, criteria, callback) {
+    mysqlDB.removeRecord(connection, 'restaurantandaddressmap', criteria, callback);
 };
-addressRestaurantMap.update = function (obj, criteria, callback) {
-    mysqlDB.updateRecord('restaurantandaddressmap', obj, criteria, callback);
+addressRestaurantMap.update = function (connection, obj, criteria, callback) {
+    mysqlDB.updateRecord(connection, 'restaurantandaddressmap', obj, criteria, callback);
 };
 
 addressRestaurantMap.select = function (criteria, range, callback) {

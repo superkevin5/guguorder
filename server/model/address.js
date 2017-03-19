@@ -11,14 +11,14 @@ var address = function (id, street, streetNumber, unitNumber, postcode_geo_fk) {
     this.postcode_geo_fk = postcode_geo_fk;
 };
 
-address.insert = function (obj, callback) {
-    mysqlDB.insertRecord('address', obj, callback);
+address.insert = function (connection, obj, callback) {
+    mysqlDB.insertRecord(connection, 'address', obj, callback);
 };
-address.remove = function (criteria, callback) {
-    mysqlDB.removeRecord('address', criteria, callback);
+address.remove = function (connection, criteria, callback) {
+    mysqlDB.removeRecord(connection, 'address', criteria, callback);
 };
-address.update = function (obj, criteria, callback) {
-    mysqlDB.updateRecord('address', obj, criteria, callback);
+address.update = function (connection, obj, criteria, callback) {
+    mysqlDB.updateRecord(connection, 'address', obj, criteria, callback);
 };
 
 address.select = function (criteria, range, callback) {

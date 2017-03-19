@@ -13,30 +13,31 @@ var Restaurant = require('../model/restaurant.js');
 var Address = require('../model/address.js');
 var AddressRestaurantMap = require('../model/addressRestaurantMap.js');
 var Postcode_geo = require('../model/postcode_geo.js');
+var mysqlDB = require('../utility/db');
 
 router.post('/register', function (req, res, next) {
 
-        var restaurantName = req.body.name;
-        var restaurantUsername = req.body.username;
-        var restaurantPassword = req.body.password;
-        var restaurantDescription = req.body.description;
-        var restaurantPhoneNumber = req.body.phoneNumber;
-        var restaurantWechatId = req.body.wechatId;
-        var restaurantImagePath = req.body.imagePath;
+    var restaurantName = req.body.name;
+    var restaurantUsername = req.body.username;
+    var restaurantPassword = req.body.password;
+    var restaurantDescription = req.body.description;
+    var restaurantPhoneNumber = req.body.phoneNumber;
+    var restaurantWechatId = req.body.wechatId;
+    var restaurantImagePath = req.body.imagePath;
 
-        req.checkBody('name', 'Name is required').notEmpty();
-        req.checkBody('username', 'username is required').notEmpty();
-        req.checkBody('password', 'password is required').notEmpty();
-        req.checkBody('description', 'description is required').notEmpty();
-        req.checkBody('phoneNumber', 'phoneNumber is required').notEmpty();
-        var errors = req.validationErrors();
-        if(errors && errors.length >0 ){
-            res.status(GUGUContants.NotAcceptable);
-            res.json(new GUGUError(GUGUContants.NotAcceptable, {
-                message: errors
-            }));
-            return;
-        }
+    req.checkBody('name', 'Name is required').notEmpty();
+    req.checkBody('username', 'username is required').notEmpty();
+    req.checkBody('password', 'password is required').notEmpty();
+    req.checkBody('description', 'description is required').notEmpty();
+    req.checkBody('phoneNumber', 'phoneNumber is required').notEmpty();
+    var errors = req.validationErrors();
+    if (errors && errors.length > 0) {
+        res.status(GUGUContants.NotAcceptable);
+        res.json(new GUGUError(GUGUContants.NotAcceptable, {
+            message: errors
+        }));
+        return;
+    }
 
     var restaurantNew = {
         username: restaurantUsername,
@@ -44,15 +45,15 @@ router.post('/register', function (req, res, next) {
         rating: null,
         description: restaurantDescription,
         phoneNumber: restaurantPhoneNumber,
-        wechatId:restaurantWechatId,
+        wechatId: restaurantWechatId,
         imagePath: restaurantImagePath
     };
 
-    bcrypt.hash(restaurantNew.password, 10, function(err, hash) {
+    bcrypt.hash(restaurantNew.password, 10, function (err, hash) {
         // Store hash in your password DB.
         restaurantNew.password = hash;
-        Restaurant.insert(restaurantNew, function(hasError,data){
-            if(!hasError) {
+        Restaurant.insert(restaurantNew, function (hasError, data) {
+            if (!hasError) {
                 res.status(GUGUContants.ok);
                 res.json(data);
             } else {
@@ -68,8 +69,8 @@ router.get('/login', function (req, res, next) {
 });
 
 
-var isAuthenticated = function(req,res,next){
-    if(req.isAuthenticated()) {
+var isAuthenticated = function (req, res, next) {
+    if (req.isAuthenticated()) {
         return next();
     }
     else
@@ -78,7 +79,7 @@ var isAuthenticated = function(req,res,next){
         })
 };
 
-router.get('/checkauth', isAuthenticated, function(req, res){
+router.get('/checkauth', isAuthenticated, function (req, res) {
     res.status(200).json({
         status: 'success'
     });
@@ -135,7 +136,7 @@ router.post('/login', bodyParser.urlencoded({extended: true}), function (req, re
         if (!restaurant) {
             req.logout();
             res.status(GUGUContants.ok);
-            return res.json({message:info.message});
+            return res.json({message: info.message});
         }
         req.logIn(restaurant, function (err) {
             if (err) {
@@ -165,7 +166,7 @@ router.get('/search/:username', function (req, res) {
 });
 
 
-router.put('/put', function (req, res) {
+router.put('/put', function (req, res, next) {
 
     var accountInfo = req.body;
 
@@ -175,17 +176,32 @@ router.put('/put', function (req, res) {
 
     process.nextTick(function () {
         isPostCode_geoValid(postcode_geo).then(function (data) {
-            if(!data){
+            if (!data) {
                 res.status(GUGUContants.ok).json({error: 'State, suburb or postcode is not matched'});
             } else {
-                updateAddressInfo(data,address).then(function(success){
-                    return updateRestaurantInfo(restaurant);
-                },function(error){
-                    res.status(GUGUContants.InternalServerError).json(error);
-                }).then(function(success){
-                    res.status(GUGUContants.ok).json({message:'Account updated'});
-                },function(error){
-                    res.status(GUGUContants.InternalServerError).json(error);
+                mysqlDB.getConnectionFromPool().then(function (connection) {
+                    connection.beginTransaction(function (err) {
+                        updateAddressInfo(connection, data, address).then(function (success) {
+                            return updateRestaurantInfo(connection, restaurant);
+                        }).then(function (success) {
+                            connection.commit(function (err) {
+                                if (err) {
+                                    return connection.rollback(function () {
+                                        next(err);
+                                    });
+                                }
+                                console.log('success!');
+                            });
+                            connection.release();
+                            res.status(GUGUContants.ok).json({message: 'Account updated'});
+                        }).catch(function (error) {
+                            connection.rollback(function () {
+                                next(error);
+                            });
+                            connection.release();
+                            res.status(GUGUContants.InternalServerError).json(error);
+                        });
+                    });
                 });
             }
         });
@@ -194,7 +210,7 @@ router.put('/put', function (req, res) {
 });
 
 
-router.get('/get/:restaurantId', function(req, res){
+router.get('/get/:restaurantId', function (req, res, next) {
 
     var restaurantId = req.params.restaurantId;
 
@@ -202,23 +218,20 @@ router.get('/get/:restaurantId', function(req, res){
 
     var restaurantRes = {};
 
-    process.nextTick(function(){
+    process.nextTick(function () {
 
-        getRestaurantInfo(restaurantId).then(function(restaurant){
+        getRestaurantInfo(restaurantId).then(function (restaurant) {
             delete restaurant['password'];
             restaurantRes.restaurant = restaurant;
             return getAddressInfo(restaurantId);
-        },function(error){
-            res.status(GUGUContants.InternalServerError).json(error);
-        }).then(function(address){
+        }).then(function (address) {
             restaurantRes.address = address;
             return getPostcodeGeo(address.postcode_geo_fk);
-        },function(error){
-            res.status(GUGUContants.InternalServerError).json(error);
-        }).then(function(postcode_geo){
+        }).then(function (postcode_geo) {
             restaurantRes.postCode_geo = postcode_geo;
             res.status(GUGUContants.ok).json(restaurantRes);
-        },function(error){
+        }).catch(function (error) {
+            next(error);
             res.status(GUGUContants.InternalServerError).json(error);
         });
     });
@@ -228,20 +241,19 @@ router.get('/get/:restaurantId', function(req, res){
 
 function hashPassword(password) {
     var salt = bcrypt.hashSync("bacon");
-    var hashedPassword = bcrypt.hashSync( password, salt );
+    var hashedPassword = bcrypt.hashSync(password, salt);
     return hashedPassword;
 };
 
 
-function updateRestaurantInfo(restaurant_new) {
+function updateRestaurantInfo(connection, restaurant_new) {
     var defer = Q.defer();
     var id = restaurant_new.id;
     var name = restaurant_new.name;
     var description = restaurant_new.description;
     var phoneNumber = restaurant_new.phoneNumber;
     var wechatId = restaurant_new.wechatId;
-
-    Restaurant.update({
+    Restaurant.update(connection, {
         name: name,
         description: description,
         phoneNumber: phoneNumber,
@@ -255,7 +267,7 @@ function updateRestaurantInfo(restaurant_new) {
 };
 
 
-function updateAddressInfo(postcode_geoData, address_new) {
+function updateAddressInfo(connection, postcode_geoData, address_new) {
 
     var defer = Q.defer();
     var postcode_geo = postcode_geoData[0];
@@ -264,7 +276,7 @@ function updateAddressInfo(postcode_geoData, address_new) {
     var street_new = address_new.street;
     var street_streetNumber_new = address_new.streetNumber;
     var street_unitNumber_new = address_new.unitNumber;
-    Address.update({
+    Address.update(connection, {
         street: street_new,
         streetNumber: street_streetNumber_new,
         unitNumber: street_unitNumber_new,
@@ -276,7 +288,6 @@ function updateAddressInfo(postcode_geoData, address_new) {
     };
     return defer.promise;
 };
-
 
 
 function getRestaurantInfo(restaurantId) {
@@ -306,7 +317,7 @@ function getAddressInfo(restaurantId) {
 };
 
 
-function isPostCode_geoValid(postcode_geo){
+function isPostCode_geoValid(postcode_geo) {
     var defer = Q.defer();
     Postcode_geo.select({
         postcode: postcode_geo.postcode,
@@ -321,7 +332,7 @@ function isPostCode_geoValid(postcode_geo){
     return defer.promise;
 };
 
-function getPostcodeGeo(id){
+function getPostcodeGeo(id) {
     var defer = Q.defer();
     Postcode_geo.select({id: id}, null, function (hasError, data) {
         if (hasError) {

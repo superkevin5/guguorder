@@ -7,11 +7,11 @@ var bodyParser = require('body-parser');
 var formidable = require('formidable');
 var Dishes = require('../model/dish.js');
 var fs = require('fs');
+var mysqlDB = require('../utility/db');
 
+router.get('/getAll/:restaurantId', function (req, res) {
 
-router.get('/getAll/:restaurantId', function(req, res){
-
-   var restaurantId = req.params.restaurantId;
+    var restaurantId = req.params.restaurantId;
 
     Dishes.select({restaurant_fk: restaurantId}, null, function (hasError, data) {
         if (hasError) {
@@ -21,8 +21,6 @@ router.get('/getAll/:restaurantId', function(req, res){
         res.status(GUGUContants.ok).json(data);
     });
 });
-
-
 
 
 router.post('/upload', function (req, res, next) {
@@ -64,14 +62,32 @@ router.post('/upload', function (req, res, next) {
 
     form.on('end', function () {
         dishNew['dishImagePath'] = dbFilePath;
-        Dishes.insert(dishNew, function (hasError, data) {
-            if (!hasError) {
-                res.status(GUGUContants.ok);
-                res.json(data);
-            } else {
-                res.status(GUGUContants.InternalServerError);
-                res.end();
-            }
+        mysqlDB.getConnectionFromPool().then(function (connection) {
+            connection.beginTransaction(function (err) {
+                Dishes.insert(connection, dishNew, function (hasError, data) {
+                    if (!hasError) {
+
+                        connection.commit(function (err) {
+                            if (err) {
+                                return connection.rollback(function () {
+                                    next(err);
+                                });
+                            }
+                            console.log('success!');
+                        });
+                        connection.release();
+                        res.status(GUGUContants.ok);
+                        res.json(data);
+                    } else {
+                        connection.rollback(function () {
+                            next(data);
+                        });
+                        connection.release();
+                        res.status(GUGUContants.InternalServerError);
+                        res.end();
+                    }
+                });
+            });
         });
     });
 

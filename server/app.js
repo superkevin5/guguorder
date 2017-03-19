@@ -114,7 +114,14 @@ app.use('/dishes', dishes);
 app.set('port', (process.env.PORT || 3002));
 
 // Connect to MySQL on start
-mysqlDB.connect();
-// sessionStore.close();
+mysqlDB.getConnectionFromPool().then(function(connection){
+    var config = connection.config;
+    console.log('Test database \'' + config.database + '\' connected on port \'' + config.port + '\' as user \'' + config.user + '\'');
+    connection.release();
+    console.log('connection released');
+}).catch(function(error){
+    console.log('connection failed due to ' + error);
+    gugulogger.error('unable to connect to mysql due to ' + error);
+});
 
 module.exports = app;
