@@ -19,6 +19,11 @@ angular.module('guguorderapp').factory('RestaurantService', ['$resource','guguCo
             url: guguConstant.APIROOTPATH + 'restaurants/put/',
             withCredentials: true,
             method: 'PUT'
+        },
+        register: {
+            url: guguConstant.APIROOTPATH + 'restaurants/register',
+            withCredentials: true,
+            method: 'POST'
         }
 
     });

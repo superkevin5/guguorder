@@ -51,6 +51,11 @@ angular
     $urlRouterProvider.when('/dashboard', '/dashboard/overview');
     $urlRouterProvider.otherwise('/login');
     $stateProvider
+        .state('register', {
+            url: '/register',
+            templateUrl: 'views/register.html',
+            controller: 'RegisterCtrl'
+        })
         .state('login', {
           url: '/login',
           templateUrl: 'views/login.html',
@@ -76,7 +81,7 @@ angular
 
   }).run(function ($rootScope, $state, $location, LoginService) {
     $rootScope.$on('$locationChangeStart', function (event) {
-        if ($location.path() != '/login') {
+        if ($location.path() != '/login' && $location.path() != '/register') {
             LoginService.isAuthenticated().$promise.then(function (data) {
                 if (data.status != 'success') {
                     $state.go('login');

@@ -63,7 +63,7 @@ exports.insertRecord = function (connection, table, obj, callback) {
             callback(true, err);
             throw err;
         }
-        var str = 'Last insert ID:' + results.insertId;
+        var str = results.insertId;
         callback(false, str);
     });
 };

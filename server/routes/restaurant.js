@@ -18,19 +18,34 @@ var mysqlDB = require('../utility/db');
 
 router.post('/register', function (req, res, next) {
 
-    var restaurantName = req.body.name;
-    var restaurantUsername = req.body.username;
-    var restaurantPassword = req.body.password;
-    var restaurantDescription = req.body.description;
-    var restaurantPhoneNumber = req.body.phoneNumber;
-    var restaurantWechatId = req.body.wechatId;
-    var restaurantImagePath = req.body.imagePath;
 
-    req.checkBody('name', 'Name is required').notEmpty();
-    req.checkBody('username', 'username is required').notEmpty();
-    req.checkBody('password', 'password is required').notEmpty();
-    req.checkBody('description', 'description is required').notEmpty();
-    req.checkBody('phoneNumber', 'phoneNumber is required').notEmpty();
+    var restaurant  = req.body.restaurant;
+
+    var postCode_geo  = req.body.postCode_geo;
+
+    var address  = req.body.address;
+
+    // console.log(restaurant);
+    // console.log(postCode_geo);
+    // console.log(address);
+
+
+
+    req.checkBody('restaurant.name', 'Restaurant name is required').notEmpty();
+    req.checkBody('restaurant.restaurant_category_fk', 'Restaurant category is required').notEmpty();
+    req.checkBody('restaurant.description', 'Restaurant description is required').notEmpty();
+    req.checkBody('restaurant.phoneNumber', 'Restaurant phoneNumber is required').notEmpty();
+    req.checkBody('restaurant.wechatId', 'Restaurant wechatId is required').notEmpty();
+
+    req.checkBody('postCode_geo.state', 'State is required').notEmpty();
+    req.checkBody('postCode_geo.suburb', 'Suburb is required').notEmpty();
+    req.checkBody('postCode_geo.postcode', 'Postcode is required').notEmpty();
+
+    req.checkBody('address.unitNumber', 'UnitNumber is required').notEmpty();
+    req.checkBody('address.streetNumber', 'StreetNumber is required').notEmpty();
+    req.checkBody('address.street', 'Street name is required').notEmpty();
+
+
     var errors = req.validationErrors();
     if (errors && errors.length > 0) {
         res.status(GUGUContants.NotAcceptable);
@@ -40,28 +55,72 @@ router.post('/register', function (req, res, next) {
         return;
     }
 
+
     var restaurantNew = {
-        username: restaurantUsername,
-        password: restaurantPassword,
+        username: restaurant.username,
+        password: restaurant.password,
         rating: null,
-        description: restaurantDescription,
-        phoneNumber: restaurantPhoneNumber,
-        wechatId: restaurantWechatId,
-        imagePath: restaurantImagePath
+        description: restaurant.description,
+        phoneNumber: restaurant.phoneNumber,
+        wechatId: restaurant.wechatId,
+        restaurant_category_fk: restaurant.restaurant_category_fk,
+        imagePath: null
     };
 
-    bcrypt.hash(restaurantNew.password, 10, function (err, hash) {
-        // Store hash in your password DB.
-        restaurantNew.password = hash;
-        Restaurant.insert(restaurantNew, function (hasError, data) {
-            if (!hasError) {
-                res.status(GUGUContants.ok);
-                res.json(data);
-            } else {
-                res.status(GUGUContants.InternalServerError);
-                res.end();
-            }
+    isPostCode_geoValid(postCode_geo).then(function(postCodeGeo){
+        bcrypt.hash(restaurantNew.password, 10, function (err, hash) {
+            // Store hash in your password DB.
+            restaurantNew.password = hash;
+
+            mysqlDB.getConnectionFromPool().then(function (connection) {
+                connection.beginTransaction(function (err) {
+
+                    address.postcode_geo_fk = postCodeGeo[0].id;
+                    insertAddressInfo(connection, address).then(function(addressInserted){
+                        console.log(addressInserted);
+                        return insertRestaurantInfo(connection, restaurantNew);
+                    }).then(function(restaurantInserted){
+                        console.log(restaurantInserted);
+                        // var map = {restaurantID:};
+                        // AddressRestaurantMap.insert(connection);
+                    }).catch(function (error) {
+                        connection.rollback(function () {
+                            next(error);
+                        });
+                        connection.release();
+                        res.status(GUGUContants.InternalServerError).json(error);
+                    });
+
+                    // Restaurant.insert(connection,restaurantNew, function (hasError, data) {
+                    //     if (!hasError) {
+                    //         connection.commit(function (err) {
+                    //             if (err) {
+                    //                 return connection.rollback(function () {
+                    //                     next(err);
+                    //                 });
+                    //             }
+                    //             console.log('success!');
+                    //         });
+                    //         connection.release();
+                    //         res.status(GUGUContants.ok);
+                    //         res.json(data);
+                    //     } else {
+                    //         connection.rollback(function () {
+                    //             next(data);
+                    //         });
+                    //         connection.release();
+                    //         res.status(GUGUContants.InternalServerError);
+                    //         res.end();
+                    //     }
+                    // });
+
+                });
+            });
         });
+    },
+    function(error){
+        res.status(GUGUContants.InternalServerError).json(error);
+        res.end();
     });
 });
 
@@ -257,6 +316,18 @@ function hashPassword(password) {
     return hashedPassword;
 };
 
+function insertRestaurantInfo(connection, restaurant_new) {
+    var defer = Q.defer();
+    Restaurant.insert(connection,restaurant_new, function (hasError, data) {
+        if (!hasError) {
+            defer.resolve(data);
+        } else {
+            defer.reject(error);
+        }
+    });
+    return defer.promise;
+};
+
 
 function updateRestaurantInfo(connection, restaurant_new) {
     var defer = Q.defer();
@@ -274,6 +345,28 @@ function updateRestaurantInfo(connection, restaurant_new) {
         wechatId: wechatId,
         restaurant_category_fk: restaurant_category_fk
     }, {id: id}, function (data) {
+        defer.resolve(data);
+    }), function (error) {
+        defer.reject(error);
+    };
+    return defer.promise;
+};
+
+function insertAddressInfo(connection, address_new) {
+
+    var defer = Q.defer();
+    console.log(address_new);
+    var postcode_geo_fk_new = address_new.postcode_geo_fk;
+    var street_new = address_new.street;
+    var street_streetNumber_new = address_new.streetNumber;
+    var street_unitNumber_new = address_new.unitNumber;
+    Address.insert(connection, {
+        street: street_new,
+        streetNumber: street_streetNumber_new,
+        unitNumber: street_unitNumber_new,
+        postcode_geo_fk: postcode_geo_fk_new
+    }, function (data) {
+        console.log('dddddddddddd');
         defer.resolve(data);
     }), function (error) {
         defer.reject(error);
@@ -339,10 +432,16 @@ function isPostCode_geoValid(postcode_geo) {
         suburb: postcode_geo.suburb,
         state: postcode_geo.state
     }, null, function (hasError, data) {
+        console.log(hasError);
+        console.log(data);
         if (hasError) {
             defer.reject(data);
         }
-        defer.resolve(data);
+        if(!data) {
+            defer.reject('state, postcode or suburb not matched');
+        }else{
+            defer.resolve(data);
+        }
     });
     return defer.promise;
 };
