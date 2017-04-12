@@ -1,0 +1,45 @@
+{
+  "pages":[
+    "pages/index/index",
+    "pages/list/index",
+    "pages/component/index",
+    "pages/i/index",
+    "pages/logs/logs"
+  ],
+  "window":{
+    "backgroundTextStyle":"light",
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "咕咕叫餐",
+    "navigationBarBackgroundColor": "#ffa500",
+    "backgroundColor": "#fbf9fe",
+    "enablePullDownRefresh": true
+  },
+  "tabBar": {
+    "color": "#dddddd",
+    "selectedColor": "#3cc51f",
+    "borderStyle": "white",
+    "backgroundColor": "#ffffff",
+    "list": [{
+      "pagePath": "pages/index/index",
+      "iconPath": "image/Icon_Main.png",
+      "selectedIconPath": "image/Icon_Main_Green.png",
+      "text": "首页"
+    }, {
+      "pagePath": "pages/list/index",
+      "iconPath": "image/Icon_Branch.png",
+      "selectedIconPath": "image/Icon_Branch_Green.png",
+      "text": "分类"
+    }, {
+      "pagePath": "pages/component/index",
+      "iconPath": "image/Icon_Like.png",
+      "selectedIconPath": "image/Icon_Like_Green.png",
+      "text": "收藏"
+    }, {
+      "pagePath": "pages/i/index",
+      "iconPath": "image/Icon_FAQ.png",
+      "selectedIconPath": "image/Icon_FAQ_Green.png",
+      "text": "FAQ"
+    }]
+  },
+  "debug": true
+}
